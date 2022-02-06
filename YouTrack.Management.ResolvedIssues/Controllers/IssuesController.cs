@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using YouTrack.Management.ResolvedIssues.Services;
+using YouTrack.Management.ResolvedIssues.Interfaces;
 
 namespace YouTrack.Management.ResolvedIssues.Controllers
 {
