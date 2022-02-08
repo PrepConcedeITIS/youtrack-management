@@ -12,7 +12,7 @@ using YouTrack.Management.Shared.Entities;
 
 namespace YouTrack.Management.ResolvedIssues.Services
 {
-    public class YouTrackIssuesLoader : IIssueLoader
+    public class YouTrackDoneIssuesLoader : IIssueLoader
     {
         private const string IssueFields =
             "fields=id,idReadable,project(name,shortName,id),summary,tags(name),links(linkType(name),issues,direction),customFields(id,name,field(name),value(minutes,login,fullName,name,id))";
@@ -25,27 +25,29 @@ namespace YouTrack.Management.ResolvedIssues.Services
 
         private readonly HttpClient _httpClient;
 
-        public YouTrackIssuesLoader(IHttpClientFactory httpClientFactory)
+        public YouTrackDoneIssuesLoader(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient(Constants.YouTrackHttpClientName);
         }
 
-        public async Task<IEnumerable<Issue>> Get()
+        public async Task<IEnumerable<Issue>> Get(HashSet<string> exceptIssuesIdsReadable = null)
         {
             var httpResponseMessage = await _httpClient.GetAsync(
                 $"issues?{IssueFields}&query={IssueQuery.PipeTo(HttpUtility.UrlEncode)}");
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
             var allResolvedIssues = JsonConvert.DeserializeObject<List<Issue>>(content);
-            var filtered = allResolvedIssues.PipeTo(FilterIssues);
+            var filtered = allResolvedIssues
+                .PipeTo(issues => FilterIssues(issues, exceptIssuesIdsReadable ?? new HashSet<string>(0)));
             var ready = await filtered
                 .PipeTo(SetCustomFields)
                 .PipeTo(SetStateChangelog);
             return ready;
         }
 
-        private IEnumerable<Issue> FilterIssues(IEnumerable<Issue> issues)
+        private IEnumerable<Issue> FilterIssues(IEnumerable<Issue> issues, HashSet<string> exceptIssuesIdsReadable)
         {
             return issues
+                    .Where(issue => !exceptIssuesIdsReadable.Contains(issue.IdReadable))
                     .Where(issue =>
                     {
                         var subtasks = issue.Links

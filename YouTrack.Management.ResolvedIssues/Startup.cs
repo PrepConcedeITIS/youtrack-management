@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 using YouTrack.Management.ResolvedIssues.Interfaces;
 using YouTrack.Management.ResolvedIssues.Services;
 
@@ -36,10 +38,11 @@ namespace YouTrack.Management.ResolvedIssues
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Configuration.GetSection("YouTrack")?["Token"]);
                 client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
-                
             });
 
-            services.AddScoped<IIssueLoader, YouTrackIssuesLoader>();
+            services.AddScoped<IIssueLoader, YouTrackDoneIssuesLoader>();
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis")
+                .Get<RedisConfiguration>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

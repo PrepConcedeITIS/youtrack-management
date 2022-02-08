@@ -6,6 +6,6 @@ namespace YouTrack.Management.ResolvedIssues.Interfaces
 {
     public interface IIssueLoader
     {
-        Task<IEnumerable<Issue>> Get();
+        Task<IEnumerable<Issue>> Get(HashSet<string> exceptIssuesIdsReadable = null);
     }
 }
