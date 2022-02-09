@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace YouTrack.Management.Shared.Entities
+namespace YouTrack.Management.Shared.Entities.Issue
 {
     public class IssueLink
     {

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using YouTrack.Management.Shared.Entities.Activity;
 
-namespace YouTrack.Management.Shared.Entities
+namespace YouTrack.Management.Shared.Entities.Issue
 {
     public class Issue : HasId
     {
@@ -27,6 +28,7 @@ namespace YouTrack.Management.Shared.Entities
         public SuccessGrade SuccessGrade { get; set; }
         public StateChangelog Changelog { get; set; }
         public Priority Priority { get; set; }
+        public IssueType IssueType { get; set; }
 
         [NotMapped]
         public double? EstimationError => (Spent?.Minutes - Estimate?.Minutes) / Estimate?.Minutes;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace YouTrack.Management.Shared.Entities
+namespace YouTrack.Management.Shared.Entities.Activity
 {
     public class Activities
     {

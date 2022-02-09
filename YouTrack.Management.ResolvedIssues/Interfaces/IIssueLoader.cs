@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using YouTrack.Management.Shared.Entities;
+using YouTrack.Management.Shared.Entities.Issue;
 
 namespace YouTrack.Management.ResolvedIssues.Interfaces
 {

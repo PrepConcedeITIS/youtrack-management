@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using YouTrack.Management.Shared.Entities.Issue;
 
-namespace YouTrack.Management.Shared.Entities
+namespace YouTrack.Management.Shared.Entities.Activity
 {
     public class Author : Assignee
     {

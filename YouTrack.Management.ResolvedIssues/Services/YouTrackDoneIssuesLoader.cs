@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YouTrack.Management.ResolvedIssues.Interfaces;
 using YouTrack.Management.Shared.Entities;
+using YouTrack.Management.Shared.Entities.Activity;
+using YouTrack.Management.Shared.Entities.Issue;
 
 namespace YouTrack.Management.ResolvedIssues.Services
 {
@@ -73,8 +75,11 @@ namespace YouTrack.Management.ResolvedIssues.Services
                         var successGrade = issue.CustomFields
                             .FirstOrDefault(field => field.Name == "SuccessGrade")
                             ?.Value;
+                        var issuesType = issue.CustomFields
+                            .FirstOrDefault(field => field.Name == "Type")
+                            ?.Value;
                         if (estimate == null || spent == null || assignee == null || complexity == null ||
-                            successGrade == null || !issue.Tags.Any())
+                            successGrade == null || issuesType == null || !issue.Tags.Any())
                             return false;
 
                         return true;
@@ -136,6 +141,14 @@ namespace YouTrack.Management.ResolvedIssues.Services
                     var priority = new Priority((string)priorityField.id,
                         (string)priorityField.name);
                     issue.Priority = priority;
+                }
+
+                var issueTypeField = issue.CustomFields.FirstOrDefault(field => field.Name == "Type")?.Value;
+                if (issueTypeField != null)
+                {
+                    var priority = new IssueType((string)issueTypeField.id,
+                        (string)issueTypeField.name);
+                    issue.IssueType = priority;
                 }
 
                 return issue;

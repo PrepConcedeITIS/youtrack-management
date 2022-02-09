@@ -1,6 +1,6 @@
 ﻿using YouTrack.Management.Shared.Enums;
 
-namespace YouTrack.Management.Shared.Entities
+namespace YouTrack.Management.Shared.Entities.Issue
 {
     public class Competence : HasId<long>
     {
