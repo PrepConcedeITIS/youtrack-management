@@ -14,8 +14,7 @@ namespace YouTrack.Management.ResolvedIssues
                 .ForMember(ml => ml.ProjectName, opt => opt.MapFrom(source => source.Project.Name))
                 .ForMember(ml => ml.AssigneeLogin, opt => opt.MapFrom(source => source.Assignee.Login))
                 .ForMember(ml => ml.Complexity, opt => opt.MapFrom(source => source.Complexity.Name))
-                .ForMember(ml => ml.EstimationError, opt => opt.MapFrom(source =>
-                    (double?)source.Spent.Minutes / source.Estimate.Minutes - 1))
+                .ForMember(ml => ml.EstimationError, opt => opt.MapFrom(s=>GetEstimationError(s)))
                 .ForMember(ml => ml.SuccessGrade, opt => opt.MapFrom(source => source.SuccessGrade.Name))
                 .ForMember(ml => ml.IssueType, opt => opt.MapFrom(source => source.IssueType.Name))
                 .ForMember(ml => ml.ReviewRefuses, opt => opt.MapFrom(source =>
@@ -27,6 +26,11 @@ namespace YouTrack.Management.ResolvedIssues
                                                            && item.FromState == "In Test"
                                                            && item.ToState == "Incomplete")))
                 ;
+        }
+
+        private static double? GetEstimationError(Issue source)
+        {
+            return (double?)source.Spent.Minutes / source.Estimate.Minutes - 1;
         }
     }
 }

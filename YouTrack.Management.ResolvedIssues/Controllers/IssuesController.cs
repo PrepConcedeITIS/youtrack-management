@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using CsvHelper;
 using Force.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis.Extensions.Core.Abstractions;
@@ -51,11 +54,36 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
         }
 
         [HttpGet("machineLearningCsv")]
-        public async Task<IEnumerable<IssueMlCsv>> GetIssuesMlCsv()
+        public async Task<IActionResult> GetIssuesMlCsv()
         {
-            var issuesMl = (await _redisClient.GetDefaultDatabase().SearchKeysAsync("*"))
-                .PipeTo(_mapper.Map<List<IssueMlCsv>>);
-            return issuesMl;
-        } 
+            var keys = await _redisClient.GetDefaultDatabase().SearchKeysAsync("*");
+            var issues = await _redisClient.GetDefaultDatabase().GetAllAsync<Issue>(keys.ToArray());
+            var issuesMl = _mapper.Map<ICollection<IssueMlCsv>>(issues.Values);
+
+            StreamWriter streamWriter = null;
+            CsvWriter csvWriter = null;
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    streamWriter = new StreamWriter(memoryStream);
+                    csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
+                    csvWriter.WriteHeader<IssueMlCsv>();
+                    csvWriter.NextRecord();
+                    foreach (var record in issuesMl)
+                    {
+                        csvWriter.WriteRecord(record);
+                        csvWriter.NextRecord();
+                    }
+
+                    return File(memoryStream, "text/csv");
+                }
+            }
+            finally
+            {
+                if (streamWriter != null) streamWriter.Dispose();
+                if (csvWriter != null) csvWriter.Dispose();
+            }
+        }
     }
 }
