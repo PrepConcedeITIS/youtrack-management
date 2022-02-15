@@ -6,11 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CsvHelper;
-using Force.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using YouTrack.Management.ResolvedIssues.Interfaces;
-using YouTrack.Management.Shared.Entities;
 using YouTrack.Management.Shared.Entities.Issue;
 
 namespace YouTrack.Management.ResolvedIssues.Controllers
@@ -59,31 +57,20 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
             var keys = await _redisClient.GetDefaultDatabase().SearchKeysAsync("*");
             var issues = await _redisClient.GetDefaultDatabase().GetAllAsync<Issue>(keys.ToArray());
             var issuesMl = _mapper.Map<ICollection<IssueMlCsv>>(issues.Values);
-
-            StreamWriter streamWriter = null;
-            CsvWriter csvWriter = null;
-            try
+            
+            byte[] bytes = null;
+            using (var memoryStream = new MemoryStream())
             {
-                using (var memoryStream = new MemoryStream())
+                using (var streamWriter = new StreamWriter(memoryStream))
+                using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
                 {
-                    streamWriter = new StreamWriter(memoryStream);
-                    csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
-                    csvWriter.WriteHeader<IssueMlCsv>();
-                    csvWriter.NextRecord();
-                    foreach (var record in issuesMl)
-                    {
-                        csvWriter.WriteRecord(record);
-                        csvWriter.NextRecord();
-                    }
+                    await csvWriter.WriteRecordsAsync(issuesMl);
+                } 
 
-                    return File(memoryStream, "text/csv");
-                }
+                bytes = memoryStream.ToArray();
             }
-            finally
-            {
-                if (streamWriter != null) streamWriter.Dispose();
-                if (csvWriter != null) csvWriter.Dispose();
-            }
+            
+            return File(bytes, "text/csv");
         }
     }
 }
