@@ -2,6 +2,26 @@
 {
     public class IssueMlCsv
     {
+        public IssueMlCsv()
+        {
+        }
+
+        public IssueMlCsv(string tagsConcatenated, string projectName, string assigneeLogin, string complexity,
+            string estimationError, int successGrade, string issueType, string summary, int reviewRefuses,
+            int testRefuses, string idReadable)
+        {
+            TagsConcatenated = tagsConcatenated;
+            ProjectName = projectName;
+            AssigneeLogin = assigneeLogin;
+            Complexity = complexity;
+            EstimationError = estimationError;
+            SuccessGrade = successGrade;
+            IssueType = issueType;
+            Summary = summary;
+            ReviewRefuses = reviewRefuses;
+            TestRefuses = testRefuses;
+            IdReadable = idReadable;
+        }
         public string TagsConcatenated { get; set; }
         public string ProjectName { get; set; }
         public string AssigneeLogin { get; set; }
@@ -10,7 +30,7 @@
         public int SuccessGrade { get; set; }
         public string IssueType { get; set; }
 
-        
+
         // Пока под вопросом
         public string Summary { get; set; }
         public int ReviewRefuses { get; set; }
@@ -20,6 +40,5 @@
         /// Техническое поле, не учавствует в обучении модели
         /// </summary>
         public string IdReadable { get; set; }
-
     }
 }
