@@ -7,7 +7,7 @@
         }
 
         public IssueMlCsv(string tagsConcatenated, string projectName, string assigneeLogin, string complexity,
-            string estimationError, int successGrade, string issueType, string summary, int reviewRefuses,
+            double? estimationError, int successGrade, string issueType, string summary, int reviewRefuses,
             int testRefuses, string idReadable)
         {
             TagsConcatenated = tagsConcatenated;
@@ -26,7 +26,7 @@
         public string ProjectName { get; set; }
         public string AssigneeLogin { get; set; }
         public string Complexity { get; set; }
-        public string EstimationError { get; set; }
+        public double? EstimationError { get; set; }
         public int SuccessGrade { get; set; }
         public string IssueType { get; set; }
 
