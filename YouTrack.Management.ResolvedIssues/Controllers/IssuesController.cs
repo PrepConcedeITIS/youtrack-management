@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using YouTrack.Management.ResolvedIssues.Interfaces;
 using YouTrack.Management.Shared.Entities.Issue;
@@ -20,12 +22,15 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
         private readonly IIssueLoader _issueLoader;
         private readonly IRedisClient _redisClient;
         private readonly IMapper _mapper;
+        private readonly HttpClient _mockDataClient;
 
-        public IssuesController(IIssueLoader issueLoader, IRedisClient redisClient, IMapper mapper)
+        public IssuesController(IIssueLoader issueLoader, IRedisClient redisClient, IMapper mapper,
+            IHttpClientFactory httpClientFactory)
         {
             _issueLoader = issueLoader;
             _redisClient = redisClient;
             _mapper = mapper;
+            _mockDataClient = httpClientFactory.CreateClient("MockDataService");
         }
 
         [HttpGet("resolvedIssuesFromTaskTracker")]
@@ -52,24 +57,58 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
         }
 
         [HttpGet("machineLearningCsv")]
-        public async Task<IActionResult> GetIssuesMlCsv()
+        public async Task<IActionResult> GetIssuesMlCsv([FromQuery] bool withMock)
         {
-            var keys = await _redisClient.GetDefaultDatabase().SearchKeysAsync("*");
-            var issues = await _redisClient.GetDefaultDatabase().GetAllAsync<Issue>(keys.ToArray());
-            var issuesMl = _mapper.Map<ICollection<IssueMlCsv>>(issues.Values);
-            
-            byte[] bytes = null;
+            async Task<List<IssueMlCsv>> GetIssuesFromRedis()
+            {
+                var keys = await _redisClient.GetDefaultDatabase().SearchKeysAsync("*");
+                var issues = await _redisClient.GetDefaultDatabase().GetAllAsync<Issue>(keys.ToArray());
+                var issueMlCsvs = _mapper.Map<List<IssueMlCsv>>(issues.Values);
+                return issueMlCsvs;
+            }
+
+            async Task<List<IssueMlCsv>> GetMockData()
+            {
+                var result = await _mockDataClient.GetStringAsync("MockTrainData");
+                return JsonConvert.DeserializeObject<List<IssueMlCsv>>(result);
+            }
+
+
+            var issuesMlTask = GetIssuesFromRedis();
+            var tasks = new List<Task>()
+            {
+                issuesMlTask
+            };
+            Task<List<IssueMlCsv>> mockTask = null;
+            if (withMock)
+            {
+                mockTask = GetMockData();
+            }
+
+            if (withMock)
+            {
+                tasks.Add(mockTask);
+            }
+
+            await Task.WhenAll(tasks);
+            var issuesMl = await issuesMlTask;
+            if (withMock)
+            {
+                issuesMl.AddRange(await mockTask);
+            }
+
+            byte[] bytes;
             using (var memoryStream = new MemoryStream())
             {
                 using (var streamWriter = new StreamWriter(memoryStream))
                 using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
                 {
                     await csvWriter.WriteRecordsAsync(issuesMl);
-                } 
+                }
 
                 bytes = memoryStream.ToArray();
             }
-            
+
             return File(bytes, "text/csv");
         }
     }

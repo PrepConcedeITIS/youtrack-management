@@ -39,6 +39,10 @@ namespace YouTrack.Management.ResolvedIssues
                     new AuthenticationHeaderValue("Bearer", Configuration.GetSection("YouTrack")?["Token"]);
                 client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
             });
+            services.AddHttpClient("MockDataService", client =>
+            {
+                client.BaseAddress = new Uri(Configuration.GetSection("MockDataService")["Url"]);
+            });
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddScoped<IIssueLoader, YouTrackDoneIssuesLoader>();
             services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis")

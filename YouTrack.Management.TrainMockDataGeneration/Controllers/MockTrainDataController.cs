@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ namespace YouTrack.Management.TrainMockDataGeneration.Controllers
     public class MockTrainDataController : ControllerBase
     {
         private readonly MockDataGenerationService _mockDataGenerationService;
+
         public MockTrainDataController(MockDataGenerationService mockDataGenerationService)
         {
             _mockDataGenerationService = mockDataGenerationService;
@@ -22,24 +22,23 @@ namespace YouTrack.Management.TrainMockDataGeneration.Controllers
         public IActionResult Get()
         {
             return Ok(_mockDataGenerationService.Handle());
-        }        
+        }
+
         [HttpGet("csv")]
         public async Task<IActionResult> Csv()
         {
-            var result = _mockDataGenerationService.Handle().ToList();
-            byte[] bytes = null;
-            using (var memoryStream = new MemoryStream())
+            const string path = "mockdata.csv";
+            if (!System.IO.File.Exists(path))
             {
-                using (var streamWriter = new StreamWriter(memoryStream))
+                var result = _mockDataGenerationService.Handle().ToList();
+                using (var streamWriter = new StreamWriter(path))
                 using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
                 {
                     await csvWriter.WriteRecordsAsync(result);
-                } 
-
-                bytes = memoryStream.ToArray();
+                }
             }
-            
-            return File(bytes, "text/csv");
+
+            return File(await System.IO.File.ReadAllBytesAsync(path), "text/csv", path);
         }
     }
 }
