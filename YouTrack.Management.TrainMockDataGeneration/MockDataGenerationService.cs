@@ -138,6 +138,7 @@ namespace YouTrack.Management.TrainMockDataGeneration
 
         public IEnumerable<IssueMlCsv> Handle()
         {
+            return _assigneeLogins.Aggregate(Enumerable.Empty<IssueMlCsv>(), AppendForDev);
             return Array.Empty<IssueMlCsv>()
                 .PipeTo(AppendFiveGradeTasks)
                 .PipeTo(AppendFourGradeTasks)
@@ -146,7 +147,7 @@ namespace YouTrack.Management.TrainMockDataGeneration
                 .PipeTo(AppendOneGradeTasks);
         }
 
-        private void AppendForDev(string login, IEnumerable<IssueMlCsv> issues)
+        private IEnumerable<IssueMlCsv> AppendForDev(IEnumerable<IssueMlCsv> issues, string login)
         {
             var issueMlCsvs = issues as IssueMlCsv[] ?? issues.ToArray();
             var grades = _grades[login];
@@ -187,6 +188,38 @@ namespace YouTrack.Management.TrainMockDataGeneration
                         }
                     }
                 });
+            var withSucceedTasks = issueMlCsvs.Concat(succeedTasks).ToList();
+            var failedTasks = Enumerable.Range(withSucceedTasks.Count + 1, 30).Select(x => $"AVG-0{x}")
+                .Select(id =>
+                {
+                    var highestGrade = grades.Select(x => x.CompetenceLevel).OrderBy(x => x).Last();
+                    var successGrades = highestGrade switch
+                    {
+                        CompetenceLevel.Junior => new[] { 2, 2, 1, 1, 1, 1 },
+                        CompetenceLevel.Middle => new[] { 2, 2, 2, 2, 1, 1 },
+                        CompetenceLevel.Senior => new[] { 2, 2, 2, 2, 2, 1 },
+                    };
+
+                    switch (successGrades[_random.Next(0, successGrades.Length)])
+                    {
+                        case 2:
+                        {
+                            var reviewRefuses = _random.Next(2, 5);
+                            var testRefuses = reviewRefuses >= 3 ? _random.Next(1, 3) : _random.Next(2, 5);
+                            var estimationError = _random.Next(-70, 80) / 100.0;
+                            return GetSample(id, login, estimationError, reviewRefuses, testRefuses, 2);
+                        }
+                        default:
+                        {
+                            var reviewRefuses = _random.Next(3, 7);
+                            var testRefuses = _random.Next(3, 7);
+                            var estimationError = _random.Next(-150, 150) / 100.0;
+                            return GetSample(id, login, estimationError, reviewRefuses, testRefuses, 1);
+                        }
+                    }
+                });
+
+            return withSucceedTasks.Concat(failedTasks);
         }
 
         private IEnumerable<IssueMlCsv> AppendTwoGradeTasks(IEnumerable<IssueMlCsv> issues)
@@ -266,6 +299,15 @@ namespace YouTrack.Management.TrainMockDataGeneration
             var assignee = _assigneeLogins[_random.Next(0, _assigneeLogins.Count)];
             return new IssueMlCsv(tags, "Average project", assignee, complexity,
                 estimationError, successGrade, type, "sample", reviewRefuses, testRefuses, idReadable);
+        }        
+        private IssueMlCsv GetSample(string idReadable, string assignee, double estimationError, int reviewRefuses, int testRefuses,
+            int successGrade)
+        {
+            var type = _issueTypes[_random.Next(0, _issueTypes.Length)];
+            var tags = _tagsConcatenated[_random.Next(0, _tagsConcatenated.Length)];
+            var complexity = _complexities[_random.Next(0, _complexities.Length)];
+            return new IssueMlCsv(tags, "Average project", assignee, complexity,
+                estimationError, successGrade, type, "sample", reviewRefuses, testRefuses, idReadable);
         }
 
         private IssueMlCsv GetSample(string idReadable, AssigneeGrade grade, AssigneeGrade[] grades,
@@ -274,10 +316,11 @@ namespace YouTrack.Management.TrainMockDataGeneration
         {
             var type = _issueTypes[_random.Next(0, _issueTypes.Length)];
             var tags = new List<CompetenceType>() { grade.CompetenceType };
-            if (_random.Next(0, 2) == 0)
+            if (_random.Next(0, 2) == 0 && grades.Length > 1)
             {
-                tags.Add(
-                    grades.Select(x => x.CompetenceType).Except(tags).ToArray()[_random.Next(0, grades.Length - 1)]);
+                var competenceTypes = grades.Select(x => x.CompetenceType).Except(tags).ToArray();
+                tags.Add(competenceTypes.Length > 1 ?
+                    competenceTypes[_random.Next(0, competenceTypes.Length)] : competenceTypes[0]);
             }
 
             var complexity = _complexities[_random.Next(0, _complexities.Length)];
