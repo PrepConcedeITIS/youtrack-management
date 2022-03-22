@@ -10,6 +10,18 @@ namespace YouTrack.Management.TrainMockDataGeneration
 {
     public class MockDataGenerationService
     {
+        class AssigneeGrade
+        {
+            public AssigneeGrade(CompetenceType competenceType, CompetenceLevel competenceLevel)
+            {
+                CompetenceType = competenceType;
+                CompetenceLevel = competenceLevel;
+            }
+
+            public CompetenceType CompetenceType { get; set; }
+            public CompetenceLevel CompetenceLevel { get; set; }
+        }
+
         private static readonly string[] _issueTypes = new[]
         {
             "Bug",
@@ -57,6 +69,64 @@ namespace YouTrack.Management.TrainMockDataGeneration
             string.Join(",", CompetenceType.Dotnet.ToString(), CompetenceType.Postgres.ToString()),
         };
 
+        private static readonly Dictionary<string, AssigneeGrade[]> _grades = new()
+        {
+            {
+                "Joe_Cobb",
+                new[]
+                {
+                    new AssigneeGrade(CompetenceType.React, CompetenceLevel.Junior),
+                    new AssigneeGrade(CompetenceType.Dotnet, CompetenceLevel.Junior)
+                }
+            },
+            {
+                "Dale_Marshall",
+                new[]
+                {
+                    new AssigneeGrade(CompetenceType.DevOps, CompetenceLevel.Junior),
+                    new AssigneeGrade(CompetenceType.Dotnet, CompetenceLevel.Middle)
+                }
+            },
+            {
+                "Adam_Lucas",
+                new[]
+                {
+                    new AssigneeGrade(CompetenceType.DevOps, CompetenceLevel.Senior),
+                    new AssigneeGrade(CompetenceType.React, CompetenceLevel.Middle)
+                }
+            },
+            {
+                "Ron_Alexander",
+                new[]
+                {
+                    new AssigneeGrade(CompetenceType.Dotnet, CompetenceLevel.Senior)
+                }
+            },
+            {
+                "James_Taylor",
+                new[]
+                {
+                    new AssigneeGrade(CompetenceType.Dotnet, CompetenceLevel.Middle)
+                }
+            },
+            {
+                "Mark_Davis",
+                new[]
+                {
+                    new AssigneeGrade(CompetenceType.React, CompetenceLevel.Middle),
+                    new AssigneeGrade(CompetenceType.Dotnet, CompetenceLevel.Middle)
+                }
+            },
+            {
+                "Rafael_Welch",
+                new[]
+                {
+                    new AssigneeGrade(CompetenceType.React, CompetenceLevel.Senior),
+                    new AssigneeGrade(CompetenceType.DevOps, CompetenceLevel.Junior)
+                }
+            },
+        };
+
         private readonly List<string> _assigneeLogins;
         private readonly Random _random;
 
@@ -89,6 +159,7 @@ namespace YouTrack.Management.TrainMockDataGeneration
             });
             return issueMlCsvs.Concat(newIssues);
         }
+
         private IEnumerable<IssueMlCsv> AppendFourGradeTasks(IEnumerable<IssueMlCsv> issues)
         {
             var issueMlCsvs = issues as IssueMlCsv[] ?? issues.ToArray();
@@ -102,6 +173,7 @@ namespace YouTrack.Management.TrainMockDataGeneration
             });
             return issueMlCsvs.Concat(newIssues);
         }
+
         private IEnumerable<IssueMlCsv> AppendThreeGradeTasks(IEnumerable<IssueMlCsv> issues)
         {
             var issueMlCsvs = issues as IssueMlCsv[] ?? issues.ToArray();
@@ -114,6 +186,7 @@ namespace YouTrack.Management.TrainMockDataGeneration
             });
             return issueMlCsvs.Concat(newIssues);
         }
+
         private IEnumerable<IssueMlCsv> AppendTwoGradeTasks(IEnumerable<IssueMlCsv> issues)
         {
             var issueMlCsvs = issues as IssueMlCsv[] ?? issues.ToArray();
@@ -126,6 +199,7 @@ namespace YouTrack.Management.TrainMockDataGeneration
             });
             return issueMlCsvs.Concat(newIssues);
         }
+
         private IEnumerable<IssueMlCsv> AppendOneGradeTasks(IEnumerable<IssueMlCsv> issues)
         {
             var issueMlCsvs = issues as IssueMlCsv[] ?? issues.ToArray();
@@ -139,7 +213,8 @@ namespace YouTrack.Management.TrainMockDataGeneration
             return issueMlCsvs.Concat(newIssues);
         }
 
-        private IssueMlCsv GetSample(string idReadable, double estimationError, int reviewRefuses, int testRefuses, int successGrade)
+        private IssueMlCsv GetSample(string idReadable, double estimationError, int reviewRefuses, int testRefuses,
+            int successGrade)
         {
             var type = _issueTypes[_random.Next(0, _issueTypes.Length)];
             var tags = _tagsConcatenated[_random.Next(0, _tagsConcatenated.Length)];
