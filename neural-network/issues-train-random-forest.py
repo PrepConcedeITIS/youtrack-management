@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import OrdinalEncoder
 
 def enum_to_int(delimiter: int, values: {}, tag: str):
     sum = 0
@@ -27,6 +28,7 @@ for tag in uniq_tags:
 print(tags_dict)
 delimiter = sum(list(tags_dict.values())[-2:])
 tags = tags.transform(lambda tag: enum_to_int(delimiter, tags_dict, tag))
+dataframe['TagsConcatenated'] = tags
 
 print(dataframe.head())
 
