@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
@@ -28,22 +30,23 @@ def encode_string_column(input_dataframe, column_source, n_features=10):
 
 
 def save_model(model):
-    joblib.dump(model, f'models/random-forest-{datetime.utcnow().strftime("%Y-%M-%d-%H-%M")}.joblib')
+    os.makedirs('models', exist_ok=True)
+    joblib.dump(model, f'models/random-forest-{datetime.utcnow().strftime("%Y-%m-%d-%H-%M")}.joblib')
 
 
 def load_model():
     models = glob.glob("models/random-forest-*.joblib")
-    last = sorted(models, reverse=True)[1]
+    last = sorted(models, reverse=True)[0]
     return joblib.load(last)
 
 
-def train(dataset: list):
+def train(path: str):
     dataframe: DataFrame = pd.DataFrame([])
-    if len(dataset) == 0:
+    if not os.path.isfile(path):
         csv_file = 'datasets/issues/mockdata.csv'
         dataframe = pd.read_csv(csv_file)
     else:
-        dataframe = pd.DataFrame(dataset)
+        dataframe = pd.read_csv(path)
 
     dataframe = dataframe.drop(
         columns=['Summary', 'ProjectName', 'IdReadable', 'EstimationError', 'ReviewRefuses', 'TestRefuses'])
@@ -60,7 +63,6 @@ def train(dataset: list):
         else:
             if tag not in tags_dict:
                 tags_dict[tag] = 2 ** len(tags_dict)
-    print(tags_dict)
     delimiter = sum(list(tags_dict.values())[-2:])
     tags = tags.transform(lambda tag: enum_to_int(delimiter, tags_dict, tag))
     dataframe['TagsConcatenated'] = tags
@@ -80,12 +82,13 @@ def train(dataset: list):
     return accuracy, clf
 
 
-def get_best_of_n(dataset: list, n: int = 1):
+def get_best_of_n(path: str, n: int = 1):
     best_accuracy = -1
     model = RandomForestClassifier()
     for i in range(n):
-        accuracy, model = train(dataset)
+        accuracy, model = train(path)
         if accuracy > best_accuracy:
             best_accuracy = accuracy
 
-    return model
+    print(f'best accuracy = {best_accuracy}')
+    return best_accuracy, model
