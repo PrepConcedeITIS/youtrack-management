@@ -11,6 +11,8 @@ from datetime import datetime
 import joblib
 import glob
 
+import IssueInput
+
 
 def enum_to_int(delimiter: int, values: {}, tag: str):
     sum = 0
@@ -52,22 +54,22 @@ def train(path: str):
         columns=['Summary', 'ProjectName', 'IdReadable', 'EstimationError', 'ReviewRefuses', 'TestRefuses'])
     dataframe = shuffle(dataframe)
 
-    tags = (dataframe['TagsConcatenated'])
-    tags_dict = {}
-    uniq_tags = tags.unique()
-    for tag in uniq_tags:
-        if ',' in tag:
-            for sub_tag in (tag.split(',')):
-                if sub_tag not in tags_dict:
-                    tags_dict[sub_tag] = 2 ** len(tags_dict)
-        else:
-            if tag not in tags_dict:
-                tags_dict[tag] = 2 ** len(tags_dict)
-    delimiter = sum(list(tags_dict.values())[-2:])
-    tags = tags.transform(lambda tag: enum_to_int(delimiter, tags_dict, tag))
-    dataframe['TagsConcatenated'] = tags
+    # tags = (dataframe['TagsConcatenated'])
+    # tags_dict = {}
+    # uniq_tags = tags.unique()
+    # for tag in uniq_tags:
+    #     if ',' in tag:
+    #         for sub_tag in (tag.split(',')):
+    #             if sub_tag not in tags_dict:
+    #                 tags_dict[sub_tag] = 2 ** len(tags_dict)
+    #     else:
+    #         if tag not in tags_dict:
+    #             tags_dict[tag] = 2 ** len(tags_dict)
+    # delimiter = sum(list(tags_dict.values())[-2:])
+    # tags = tags.transform(lambda tag: enum_to_int(delimiter, tags_dict, tag))
+    # dataframe['TagsConcatenated'] = tags
 
-    categorical_features = ['AssigneeLogin', 'Complexity', 'IssueType']
+    categorical_features = ['AssigneeLogin', 'Complexity', 'IssueType', 'TagsConcatenated']
     for feature in categorical_features:
         dataframe = encode_string_column(dataframe, feature)
 
@@ -92,3 +94,15 @@ def get_best_of_n(path: str, n: int = 1):
 
     print(f'best accuracy = {best_accuracy}')
     return best_accuracy, model
+
+
+def predict(input: list[IssueInput], model):
+    dataframe = pd.DataFrame(input)
+    dataframe['TagsConcatenated'] = dataframe['TagsConcatenated'].map(','.join)
+    predict_input = dataframe.drop(columns=['Id'])
+    categorical_features = ['AssigneeLogin', 'Complexity', 'IssueType', 'TagsConcatenated']
+    for feature in categorical_features:
+        predict_input = encode_string_column(predict_input, feature)
+    predict_result = model.predict(predict_input)
+    result = pd.concat([dataframe['Id'], pd.DataFrame(predict_result)], axis=1).values.tolist()
+    return result
