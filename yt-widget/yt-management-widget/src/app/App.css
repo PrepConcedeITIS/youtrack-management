@@ -1,0 +1,35 @@
+@import "@jetbrains/ring-ui/components/global/variables.css";
+@value unit from "@jetbrains/ring-ui/components/global/global.css";
+
+html {
+    height: 100%
+}
+
+:global(#app-container) {
+    height: 100%;
+    width: 100%;
+}
+
+:global(.widget-body) {
+    margin: 0;
+    padding: calc(unit * 2);
+    height: calc(100% - 32px);
+
+    background: var(--ring-content-background-color);
+
+    font-size: var(--ring-font-size);
+}
+
+.widget {
+    composes: font from "@jetbrains/ring-ui/components/global/global.css";
+
+    margin: 0;
+    padding: 0;
+}
+
+.pet-image {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    object-position: center;
+}
