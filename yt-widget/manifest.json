@@ -1,0 +1,20 @@
+{
+  "key": "youtrack-board-status-widget",
+  "name": "Agile Board Status",
+  "version": "0.0.17",
+  "description": "Displays the progress indicator for columns from an agile board in YouTrack.",
+  "author": "JetBrains",
+  "applicationName": "YouTrack",
+  "dependencies": {
+    "YouTrack": ">=2017.4",
+    "Hub": ">=2017.4"
+  },
+  "products": {
+    "YouTrack": ">=2017.4",
+    "Hub": ">=2017.4"
+  },
+  "capabilities": {
+    "popups": true,
+    "topNavigation": true
+  }
+}
