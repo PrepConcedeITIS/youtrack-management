@@ -30,6 +30,8 @@ namespace YouTrack.Management.TrainMockDataGeneration
                 c.SwaggerDoc("v1",
                     new OpenApiInfo { Title = "YouTrack.Management.TrainMockDataGeneration", Version = "v1" });
             });
+            
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +48,7 @@ namespace YouTrack.Management.TrainMockDataGeneration
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
