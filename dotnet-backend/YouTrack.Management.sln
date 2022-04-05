@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.Assigne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.RelationalDal", "YouTrack.Management.RelationalDal\YouTrack.Management.RelationalDal.csproj", "{EB29D3DF-6EC1-44AC-B6A0-E3BA76E05D79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.ApiGateway", "YouTrack.Management.ApiGateway\YouTrack.Management.ApiGateway.csproj", "{B0FBED5E-18F4-48B1-B988-9669750B7639}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{EB29D3DF-6EC1-44AC-B6A0-E3BA76E05D79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB29D3DF-6EC1-44AC-B6A0-E3BA76E05D79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB29D3DF-6EC1-44AC-B6A0-E3BA76E05D79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0FBED5E-18F4-48B1-B988-9669750B7639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0FBED5E-18F4-48B1-B988-9669750B7639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0FBED5E-18F4-48B1-B988-9669750B7639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0FBED5E-18F4-48B1-B988-9669750B7639}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
