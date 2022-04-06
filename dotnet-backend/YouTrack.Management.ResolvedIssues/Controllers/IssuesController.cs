@@ -56,6 +56,7 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
             return Ok(allIssues);
         }
 
+        //todo: rewrite mock part add regenerate param to TrainMockDataGenerationClient.GetMockTrainData
         [HttpGet("machineLearningCsv")]
         public async Task<IActionResult> GetIssuesMlCsv([FromQuery] bool withMock)
         {
