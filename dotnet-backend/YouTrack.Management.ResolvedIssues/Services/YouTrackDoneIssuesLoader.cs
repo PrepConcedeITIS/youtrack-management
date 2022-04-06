@@ -8,7 +8,6 @@ using Force.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YouTrack.Management.ResolvedIssues.Interfaces;
-using YouTrack.Management.Shared.Entities;
 using YouTrack.Management.Shared.Entities.Activity;
 using YouTrack.Management.Shared.Entities.Issue;
 

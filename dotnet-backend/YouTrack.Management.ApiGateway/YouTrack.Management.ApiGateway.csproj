@@ -7,4 +7,9 @@
     <ItemGroup>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\YouTrack.Management.MachineLearning.Client\YouTrack.Management.MachineLearning.Client.csproj" />
+      <ProjectReference Include="..\YouTrack.Management.TrainMockDataGeneration.Client\YouTrack.Management.TrainMockDataGeneration.Client.csproj" />
+    </ItemGroup>
 </Project>

@@ -12,8 +12,8 @@ def train_model():
     file.save(path)
     accuracy, model = get_best_of_n(path, 100)
     save_model(model)
-    result = {'accuracy': accuracy};
-    return jsonify(accuracy)
+    result = {'accuracy': accuracy}
+    return jsonify(result)
 
 
 @app.route("/predict", methods=['POST'])
