@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\YouTrack.Management.Common\YouTrack.Management.Common.csproj" />
+      <ProjectReference Include="..\YouTrack.Management.MachineLearning.Contracts\YouTrack.Management.MachineLearning.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

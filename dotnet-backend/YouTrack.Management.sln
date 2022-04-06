@@ -24,6 +24,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.TrainMo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.MachineLearning.Client", "YouTrack.Management.MachineLearning.Client\YouTrack.Management.MachineLearning.Client.csproj", "{A6A2FE99-BC9E-4F9B-9FFA-A99DB5770CA4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "YouTrack.Management.MachineLearning", "YouTrack.Management.MachineLearning", "{0DFA69CE-074C-4342-B489-AF5670F19906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.MachineLearning.Contracts", "YouTrack.Management.MachineLearning.Contracts\YouTrack.Management.MachineLearning.Contracts.csproj", "{1AE12F55-EBB6-4227-B251-181224EEBDFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +74,10 @@ Global
 		{A6A2FE99-BC9E-4F9B-9FFA-A99DB5770CA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6A2FE99-BC9E-4F9B-9FFA-A99DB5770CA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6A2FE99-BC9E-4F9B-9FFA-A99DB5770CA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE12F55-EBB6-4227-B251-181224EEBDFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE12F55-EBB6-4227-B251-181224EEBDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE12F55-EBB6-4227-B251-181224EEBDFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE12F55-EBB6-4227-B251-181224EEBDFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5D4A6DD3-FD22-4781-9F28-B02378D6B9B8} = {2ED9C8EC-3F2A-479F-98F9-F4312BB29A5D}
@@ -77,5 +85,7 @@ Global
 		{D06C1D8D-927E-44EC-9709-84CB01D67427} = {AF1F5DC8-DF51-4497-A54C-12B00FE929A9}
 		{CD1E440A-3CC6-4278-8D84-6221DEE70B8D} = {2ED9C8EC-3F2A-479F-98F9-F4312BB29A5D}
 		{0F7BF6D0-07DE-4E2B-9C91-A5F923743B96} = {2ED9C8EC-3F2A-479F-98F9-F4312BB29A5D}
+		{A6A2FE99-BC9E-4F9B-9FFA-A99DB5770CA4} = {0DFA69CE-074C-4342-B489-AF5670F19906}
+		{1AE12F55-EBB6-4227-B251-181224EEBDFE} = {0DFA69CE-074C-4342-B489-AF5670F19906}
 	EndGlobalSection
 EndGlobal

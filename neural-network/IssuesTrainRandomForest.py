@@ -105,4 +105,8 @@ def predict(input: list[IssueInput], model):
         predict_input = encode_string_column(predict_input, feature)
     predict_result = model.predict(predict_input)
     result = pd.concat([dataframe['Id'], pd.DataFrame(predict_result)], axis=1).values.tolist()
-    return result
+    resultData = list(map(lambda item: {
+        'id': item[0],
+        'grade': item[1]
+    }, result))
+    return {'predictions': resultData}
