@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using YouTrack.Management.AssigneeActualize.Client;
 using YouTrack.Management.Common;
+using YouTrack.Management.MachineLearning.Client;
+using YouTrack.Management.ResolvedIssues.Client;
+using YouTrack.Management.TrainMockDataGeneration.Client;
 
 namespace YouTrack.Management.ApiGateway
 {
@@ -23,6 +26,8 @@ namespace YouTrack.Management.ApiGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
+
+            AddClients(services);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -53,7 +58,14 @@ namespace YouTrack.Management.ApiGateway
         {
             var httpClientConfigurator = new DefaultHttpClientConfigurator();
 
-            services.AddClient<AssigneeActualizeClient, AssigneeActualizeClientSettings>(Configuration, httpClientConfigurator);
+            services.AddClient<AssigneeActualizeClient, AssigneeActualizeClientSettings>(Configuration,
+                httpClientConfigurator);
+            services.AddClient<ResolvedIssuesClient, ResolvedIssuesClientSettings>(Configuration,
+                httpClientConfigurator);
+            services.AddClient<TrainMockDataGenerationClient, TrainMockDataGenerationClientSettings>(Configuration,
+                httpClientConfigurator);
+            services.AddClient<MachineLearningClient, MachineLearningClientSettings>(Configuration,
+                httpClientConfigurator);
 
             return services;
         }

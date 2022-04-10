@@ -27,8 +27,8 @@ namespace YouTrack.Management.MachineLearning.Client
             var multipartFormDataContent = new MultipartFormDataContent();
             var csvContent = new StreamContent(csvStream);
             csvContent.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
-            multipartFormDataContent.Add(csvContent, "data", "data.csv");
-            var (_, result) = await CallApi(client => client.PostAsync(url, multipartFormDataContent));
+            multipartFormDataContent.Add(csvContent, "train-data", "train-data");
+            var (statusCode, result) = await CallApi(client => client.PostAsync(url, multipartFormDataContent));
             return DeserializeResult<TrainResponse>(result);
         }
     }

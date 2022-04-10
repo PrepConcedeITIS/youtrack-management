@@ -13,7 +13,7 @@ namespace YouTrack.Management.Common
         protected virtual void ConfigureClient(HttpClient client, BaseClientSettings settings)
         {
             client.Timeout = TimeSpan.FromSeconds(settings.Endpoint.TimeoutInSeconds);
-            client.DefaultRequestVersion = HttpVersion.Version20;
+            //client.DefaultRequestVersion = HttpVersion.Version20;
             client.BaseAddress = new Uri(settings.Endpoint.Url);
         }
 
@@ -23,7 +23,7 @@ namespace YouTrack.Management.Common
         protected virtual HttpClientHandler CreateClientHandler(BaseClientSettings settings)
         {
             var httpHandler = new HttpClientHandler();
-
+            httpHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
             return httpHandler;
         }
 
