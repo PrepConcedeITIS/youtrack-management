@@ -1,4 +1,12 @@
 TagsConcatenated,ProjectName,AssigneeLogin,Complexity,EstimationError,SuccessGrade,IssueType,Summary,ReviewRefuses,TestRefuses,IdReadable
+React,Average project,Joe_Cobb,Junior,0,5,Feature,Страница авторизации,0,0,AVG-9
+React,Average project,Mark_Davis,Middle,0.5,3,Feature,Страница регистрации,0,0,AVG-8
+React,Average project,Rafael_Welch,Senior,-0.125,5,Feature,Реализовать шаблон приложения и настроить алгоритм связи с бекендом,0,0,AVG-7
+"Postges,DevOps",Average project,Adam_Lucas,Senior,-0.25,4,Task,Развернуть dev окружение,0,0,AVG-11
+Dotnet,Average project,Dale_Marshall,Junior,0,5,Feature,API внутренней авторизации,0,2,AVG-6
+"Dotnet,Postges",Average project,James_Taylor,Middle,0,5,Feature,Схема БД для сервиса авторизации,0,0,AVG-5
+Dotnet,Average project,Ron_Alexander,Middle,-0.08333333333333337,4,Feature,API внутренней регистрации,0,0,AVG-4
+DevOps,Average project,Adam_Lucas,Senior,-0.125,5,Task,Настроить gitlab cicd,0,0,AVG-10
 "React,Dotnet",Average project,Joe_Cobb,Middle,-0.07,4,Feature,sample,0,2,AVG-01
 React,Average project,Joe_Cobb,Middle,0.05,3,Bug,sample,1,2,AVG-02
 Dotnet,Average project,Joe_Cobb,Senior,0.01,5,Feature,sample,1,0,AVG-03
