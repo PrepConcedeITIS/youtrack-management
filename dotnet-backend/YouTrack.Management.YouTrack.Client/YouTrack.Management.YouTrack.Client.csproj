@@ -7,6 +7,7 @@
     <ItemGroup>
       <ProjectReference Include="..\YouTrack.Management.Common\YouTrack.Management.Common.csproj" />
       <ProjectReference Include="..\YouTrack.Management.Shared\YouTrack.Management.Shared.csproj" />
+      <ProjectReference Include="..\YouTrack.Management.YouTrack.Client.Contracts\YouTrack.Management.YouTrack.Client.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

@@ -11,13 +11,15 @@ using Newtonsoft.Json.Linq;
 using YouTrack.Management.Common;
 using YouTrack.Management.Shared.Entities.Activity;
 using YouTrack.Management.Shared.Entities.Issue;
+using YouTrack.Management.YouTrack.Client.Contracts;
 
 namespace YouTrack.Management.YouTrack.Client
 {
     public class YouTrackClient : BaseClient
     {
-        private const string IssueFields = "fields=id,idReadable,project(name,shortName,id),summary,tags(name),links(linkType(name),issues,direction),customFields(id,name,field(name),value(minutes,login,fullName,name,id))";
-        
+        private const string IssueFields =
+            "fields=id,idReadable,project(name,shortName,id),summary,tags(name),links(linkType(name),issues,direction),customFields(id,name,field(name),value(minutes,login,fullName,name,id))";
+
         public YouTrackClient(HttpClient httpClient) : base(httpClient)
         {
         }
@@ -25,6 +27,20 @@ namespace YouTrack.Management.YouTrack.Client
         protected override T DeserializeResult<T>(string result)
         {
             return JsonConvert.DeserializeObject<T>(result);
+        }
+
+        public async Task AssignToIssue(string issueIdReadable, string assigneeLogin)
+        {
+            var url = BuildUrl($"issues/{issueIdReadable}");
+            var body = new
+            {
+                customFields = new[]
+                {
+                    new ChangeAssigneeRequest(assigneeLogin)
+                }
+            };
+
+            await CallApiPost(url, JsonContent(body));
         }
 
         public async Task<List<Issue>> GetDoneIssues(string projectShortName = "AVG",
