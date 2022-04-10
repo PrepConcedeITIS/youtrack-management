@@ -1,92 +1,103 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Force.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using YouTrack.Management.ResolvedIssues.Interfaces;
+using YouTrack.Management.Common;
 using YouTrack.Management.Shared.Entities.Activity;
 using YouTrack.Management.Shared.Entities.Issue;
-using YouTrack.Management.YouTrack.Client;
 
-namespace YouTrack.Management.ResolvedIssues.Services
+namespace YouTrack.Management.YouTrack.Client
 {
-    public class YouTrackDoneIssuesLoader : IIssueLoader
+    public class YouTrackClient : BaseClient
     {
-        private const string IssueFields =
-            "fields=id,idReadable,project(name,shortName,id),summary,tags(name),links(linkType(name),issues,direction),customFields(id,name,field(name),value(minutes,login,fullName,name,id))";
-
-        private const string IssueQuery =
-            "#Feature #Task #Bug #Done #{Won't fix} project: AVG";
-
-        private const string ActivitiesFields =
-            @"categories=CustomFieldCategory&fields=activities($type,added($type,name,id),author($typeemail,fullName,id,login,name,ringId),category(id),id,removed($type,name,id),targetMember,timestamp,type,target(id,idReadable))";
-
-        private readonly HttpClient _httpClient;
-        private readonly YouTrackClient _youTrackClient;
-        public YouTrackDoneIssuesLoader(IHttpClientFactory httpClientFactory, YouTrackClient youTrackClient)
+        private const string IssueFields = "fields=id,idReadable,project(name,shortName,id),summary,tags(name),links(linkType(name),issues,direction),customFields(id,name,field(name),value(minutes,login,fullName,name,id))";
+        
+        public YouTrackClient(HttpClient httpClient) : base(httpClient)
         {
-            _youTrackClient = youTrackClient;
-            _httpClient = httpClientFactory.CreateClient(Constants.YouTrackHttpClientName);
         }
 
-        public async Task<IEnumerable<Issue>> Get(HashSet<string> exceptIssuesIdsReadable = null)
+        protected override T DeserializeResult<T>(string result)
         {
-            return await _youTrackClient.GetDoneIssues(exceptIssuesIdsReadable: exceptIssuesIdsReadable);
-            var httpResponseMessage = await _httpClient.GetAsync(
-                $"issues?{IssueFields}&query={IssueQuery.PipeTo(HttpUtility.UrlEncode)}");
-            var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            var allResolvedIssues = JsonConvert.DeserializeObject<List<Issue>>(content);
+            return JsonConvert.DeserializeObject<T>(result);
+        }
+
+        public async Task<List<Issue>> GetDoneIssues(string projectShortName = "AVG",
+            HashSet<string> exceptIssuesIdsReadable = null)
+        {
+            var query = "#Feature #Task #Bug #Done #{Won't fix} project: " + projectShortName;
+            var url = BuildUrl($"issues?{IssueFields}&query={query.PipeTo(HttpUtility.UrlEncode)}");
+            var (statusCode, result) = await CallApiGet(url);
+            var allResolvedIssues = DeserializeResult<List<Issue>>(result);
             var filtered = allResolvedIssues
                 .PipeTo(issues => FilterIssues(issues, exceptIssuesIdsReadable ?? new HashSet<string>(0)));
             var ready = await filtered
                 .PipeTo(SetCustomFields)
                 .PipeTo(SetStateChangelog);
             return ready;
+
+            IEnumerable<Issue> FilterIssues(IEnumerable<Issue> issues, HashSet<string> exceptIssuesIdsReadable)
+            {
+                return issues
+                        .Where(issue => !exceptIssuesIdsReadable.Contains(issue.IdReadable))
+                        .Where(issue =>
+                        {
+                            var subtasks = issue.Links
+                                .FirstOrDefault(link =>
+                                    link.LinkType.Name == "Subtask" &&
+                                    link.Direction == IssueLink.LinkDirection.OUTWARD)?.Issues;
+                            return !subtasks?.Any() ?? true;
+                        })
+                        .Where(issue =>
+                        {
+                            var estimate = issue.CustomFields
+                                .FirstOrDefault(field => field.Name == "Estimation")
+                                ?.Value;
+                            var spent = issue.CustomFields
+                                .FirstOrDefault(field => field.Name == "Spent time")
+                                ?.Value;
+                            var assignee = issue.CustomFields
+                                .FirstOrDefault(field => field.Name == "Assignee")
+                                ?.Value;
+                            var complexity = issue.CustomFields
+                                .FirstOrDefault(field => field.Name == "Complexity")
+                                ?.Value;
+                            var successGrade = issue.CustomFields
+                                .FirstOrDefault(field => field.Name == "SuccessGrade")
+                                ?.Value;
+                            var issuesType = issue.CustomFields
+                                .FirstOrDefault(field => field.Name == "Type")
+                                ?.Value;
+                            if (estimate is null || spent is null || assignee is null || complexity is null ||
+                                successGrade is null || issuesType is null || !issue.Tags.Any())
+                                return false;
+
+                            return true;
+                        })
+                    ;
+            }
         }
 
-        private IEnumerable<Issue> FilterIssues(IEnumerable<Issue> issues, HashSet<string> exceptIssuesIdsReadable)
+        public async Task<List<Issue>> GetIssuesBySprint(string sprint = "Sprint 1", string projectShortName = "AVG")
         {
-            return issues
-                    .Where(issue => !exceptIssuesIdsReadable.Contains(issue.IdReadable))
-                    .Where(issue =>
-                    {
-                        var subtasks = issue.Links
-                            .FirstOrDefault(link =>
-                                link.LinkType.Name == "Subtask" &&
-                                link.Direction == IssueLink.LinkDirection.OUTWARD)?.Issues;
-                        return !subtasks?.Any() ?? true;
-                    })
-                    .Where(issue =>
-                    {
-                        var estimate = issue.CustomFields
-                            .FirstOrDefault(field => field.Name == "Estimation")
-                            ?.Value;
-                        var spent = issue.CustomFields
-                            .FirstOrDefault(field => field.Name == "Spent time")
-                            ?.Value;
-                        var assignee = issue.CustomFields
-                            .FirstOrDefault(field => field.Name == "Assignee")
-                            ?.Value;
-                        var complexity = issue.CustomFields
-                            .FirstOrDefault(field => field.Name == "Complexity")
-                            ?.Value;
-                        var successGrade = issue.CustomFields
-                            .FirstOrDefault(field => field.Name == "SuccessGrade")
-                            ?.Value;
-                        var issuesType = issue.CustomFields
-                            .FirstOrDefault(field => field.Name == "Type")
-                            ?.Value;
-                        if (estimate == null || spent == null || assignee == null || complexity == null ||
-                            successGrade == null || issuesType == null || !issue.Tags.Any())
-                            return false;
+            var query = $"Sprint: {"{" + sprint + "}"} #Unresolved #Unassigned #Feature #Task #Bug project: AVG";
+            var url = BuildUrl($"issues?{IssueFields}&query={query.PipeTo(HttpUtility.UrlEncode)}");
 
-                        return true;
-                    })
-                ;
+            var (statusCode, result) = await CallApiGet(url);
+            var rawIssues = DeserializeResult<List<Issue>>(result);
+
+            return rawIssues.PipeTo(FilterIssues).PipeTo(SetCustomFields).ToList();
+
+            IEnumerable<Issue> FilterIssues(IEnumerable<Issue> issues)
+            {
+                return issues
+                    .Where(issue => issue.Tags.Any());
+            }
         }
 
         private IEnumerable<Issue> SetCustomFields(IEnumerable<Issue> issues)
@@ -95,13 +106,13 @@ namespace YouTrack.Management.ResolvedIssues.Services
             {
                 var estimate = new Estimate((int?)issue.CustomFields
                     .FirstOrDefault(field => field.Name == "Estimation")
-                    ?.Value.minutes);
-                issue.Estimate = estimate;
+                    ?.Value?.minutes);
+                issue.Estimate = estimate.Minutes is null ? null : estimate;
 
                 var spent = new Spent((int?)issue.CustomFields
                     .FirstOrDefault(field => field.Name == "Spent time")
-                    ?.Value.minutes);
-                issue.Spent = spent;
+                    ?.Value?.minutes);
+                issue.Spent = spent.Minutes is null ? null : spent;
 
                 var stateField = issue.CustomFields.FirstOrDefault(field => field.Name == "State")?.Value;
                 if (stateField != null)
@@ -159,29 +170,27 @@ namespace YouTrack.Management.ResolvedIssues.Services
 
         private async Task<List<Issue>> SetStateChangelog(IEnumerable<Issue> issues)
         {
+            const string activitiesFields =
+                @"categories=CustomFieldCategory&fields=activities($type,added($type,name,id),author($typeemail,fullName,id,login,name,ringId),category(id),id,removed($type,name,id),targetMember,timestamp,type,target(id,idReadable))";
             var issuesList = issues.ToList();
             var issuesDict = issuesList.ToDictionary(issue => issue.Id, issue => issue);
             var needToSkip = 0;
             const int take = 50;
             var iterationsCount = (int)Math.Ceiling((decimal)issuesList.Count / take);
-            var responses = new List<HttpResponseMessage>();
+            var responses = new List<(HttpStatusCode, string)>();
             for (int i = 0; i < iterationsCount; i++)
             {
                 var tasks = issuesList.Skip(needToSkip).Take(take).Select(issue =>
                 {
-                    var url = $"issues/{issue.Id}/activitiesPage?{ActivitiesFields}";
-                    return _httpClient.GetAsync(url);
+                    var url = BuildUrl($"issues/{issue.Id}/activitiesPage?{activitiesFields}");
+                    return CallApiGet(url);
                 });
                 needToSkip += take;
                 responses.AddRange(await Task.WhenAll(tasks));
             }
 
-            var activitiesJsonTasks = responses
-                .Select(response => response.Content.ReadAsStringAsync()).ToList();
-            await Task.WhenAll(activitiesJsonTasks);
-
-            var activities = activitiesJsonTasks
-                .Select(jsonTask => jsonTask.Result.PipeTo(JsonConvert.DeserializeObject<Activities>))
+            var activities = responses
+                .Select(response => DeserializeResult<Activities>(response.Item2))
                 .ToDictionary(list => list.List.FirstOrDefault()?.Target?.Id,
                     list => list.List
                         .Where(activity => activity.TargetMember.Contains("__CUSTOM_FIELD__State"))

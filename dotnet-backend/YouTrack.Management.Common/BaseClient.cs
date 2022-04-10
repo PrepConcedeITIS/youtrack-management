@@ -107,7 +107,7 @@ namespace YouTrack.Management.Common
         /// <summary>
         /// Сформировать объект из JSON представления
         /// </summary>
-        protected T DeserializeResult<T>(string result) => JsonSerializer.Deserialize<T>(result, _jsonOptions);
+        protected virtual T DeserializeResult<T>(string result) => JsonSerializer.Deserialize<T>(result, _jsonOptions);
 
         /// <summary>
         /// Создать URL

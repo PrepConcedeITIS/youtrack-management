@@ -8,8 +8,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis.Extensions.Core.Configuration;
 using StackExchange.Redis.Extensions.Newtonsoft;
+using YouTrack.Management.Common;
 using YouTrack.Management.ResolvedIssues.Interfaces;
 using YouTrack.Management.ResolvedIssues.Services;
+using YouTrack.Management.YouTrack.Client;
 
 namespace YouTrack.Management.ResolvedIssues
 {
@@ -43,6 +45,8 @@ namespace YouTrack.Management.ResolvedIssues
             {
                 client.BaseAddress = new Uri(Configuration.GetSection("MockDataService")["Url"]);
             });
+
+            services.AddClient<YouTrackClient, YouTrackClientSettings>(Configuration, new YouTrackClientConfigurator());
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddScoped<IIssueLoader, YouTrackDoneIssuesLoader>();
             services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis")
