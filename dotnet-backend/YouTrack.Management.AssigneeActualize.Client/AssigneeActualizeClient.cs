@@ -4,7 +4,7 @@ using YouTrack.Management.Common;
 
 namespace YouTrack.Management.AssigneeActualize.Client
 {
-    public class AssigneeActualizeClient: BaseClient
+    public class AssigneeActualizeClient : BaseClient
     {
         public AssigneeActualizeClient(HttpClient httpClient) : base(httpClient)
         {

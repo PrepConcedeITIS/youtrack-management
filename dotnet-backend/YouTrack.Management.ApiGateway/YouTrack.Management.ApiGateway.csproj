@@ -9,7 +9,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\YouTrack.Management.AssigneeActualize.Client\YouTrack.Management.AssigneeActualize.Client.csproj" />
       <ProjectReference Include="..\YouTrack.Management.MachineLearning.Client\YouTrack.Management.MachineLearning.Client.csproj" />
+      <ProjectReference Include="..\YouTrack.Management.ResolvedIssues.Client\YouTrack.Management.ResolvedIssues.Client.csproj" />
       <ProjectReference Include="..\YouTrack.Management.TrainMockDataGeneration.Client\YouTrack.Management.TrainMockDataGeneration.Client.csproj" />
     </ItemGroup>
 </Project>
