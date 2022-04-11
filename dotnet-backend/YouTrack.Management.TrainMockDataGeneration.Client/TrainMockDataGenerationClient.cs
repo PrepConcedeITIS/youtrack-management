@@ -16,7 +16,7 @@ namespace YouTrack.Management.TrainMockDataGeneration.Client
         public async Task<List<IssueMlCsv>> GetMockTrainData()
         {
             var url = BuildUrl("MockTrainData");
-            var (_, result) = await CallApiGet(url);
+            var (_, result) = await CallApiGetAsync(url);
             return DeserializeResult<List<IssueMlCsv>>(result);
         }
 

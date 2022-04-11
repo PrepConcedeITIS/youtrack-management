@@ -1,5 +1,7 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
+using YouTrack.Management.AssigneeActualize.Contracts;
 using YouTrack.Management.Common;
 
 namespace YouTrack.Management.AssigneeActualize.Client
@@ -13,7 +15,14 @@ namespace YouTrack.Management.AssigneeActualize.Client
         public async Task ActualizeAssigneesInDatabase()
         {
             var url = BuildUrl("AssigneeActualize");
-            await CallApiGet(url);
+            await CallApiPostAsync(url, null);
+        }
+
+        public async Task<List<AssigneeResponse>> GetAssigneesByProject(string projectShortName)
+        {
+            var url = BuildUrl($"AssigneeActualize/{projectShortName}");
+            var (_, result) = await CallApiGetAsync(url);
+            return DeserializeResult<List<AssigneeResponse>>(result);
         }
     }
 }

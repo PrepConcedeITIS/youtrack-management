@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using YouTrack.Management.AssigneeActualize.Client;
+using YouTrack.Management.AssignSprint.Client;
 using YouTrack.Management.Common;
 using YouTrack.Management.MachineLearning.Client;
 using YouTrack.Management.ResolvedIssues.Client;
@@ -63,6 +64,8 @@ namespace YouTrack.Management.ApiGateway
             services.AddClient<ResolvedIssuesClient, ResolvedIssuesClientSettings>(Configuration,
                 httpClientConfigurator);
             services.AddClient<TrainMockDataGenerationClient, TrainMockDataGenerationClientSettings>(Configuration,
+                httpClientConfigurator);
+            services.AddClient<AssignSprintClient, AssignSprintClientSettings>(Configuration,
                 httpClientConfigurator);
             services.AddClient<MachineLearningClient, MachineLearningClientSettings>(Configuration,
                 httpClientConfigurator);

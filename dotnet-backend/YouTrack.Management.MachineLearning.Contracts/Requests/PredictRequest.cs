@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using YouTrack.Management.Shared.Enums;
 
-namespace YouTrack.Management.MachineLearning.Contracts
+namespace YouTrack.Management.MachineLearning.Contracts.Requests
 {
     public class PredictRequest
     {
@@ -23,7 +22,7 @@ namespace YouTrack.Management.MachineLearning.Contracts
         {
         }
 
-        public PredictRequestItem(string assigneeLogin, CompetenceLevel complexity, CompetenceType[] tags,
+        public PredictRequestItem(string assigneeLogin, string complexity, string[] tags,
             string issueType, string id)
         {
             AssigneeLogin = assigneeLogin;
@@ -34,8 +33,8 @@ namespace YouTrack.Management.MachineLearning.Contracts
         }
 
         public string AssigneeLogin { get; init; }
-        public CompetenceLevel Complexity { get; init; }
-        public CompetenceType[] Tags { get; init; }
+        public string Complexity { get; init; }
+        public string[] Tags { get; init; }
         public string IssueType { get; init; }
         public string Id { get; init; }
     }

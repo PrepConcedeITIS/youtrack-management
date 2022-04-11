@@ -18,14 +18,14 @@ namespace YouTrack.Management.ResolvedIssues.Client
         public async Task<List<Issue>> GetResolvedIssuesFromTaskTracker()
         {
             var url = BuildUrl($"{BaseUrl}/resolvedIssuesFromTaskTracker");
-            var (_, result) = await CallApiGet(url);
+            var (_, result) = await CallApiGetAsync(url);
             return DeserializeResult<List<Issue>>(result);
         }
 
         public async Task<List<Issue>> RenewIssuesInStorage()
         {
             var url = BuildUrl($"{BaseUrl}/renewIssuesInStorage");
-            var (_, result) = await CallApiPost(url, null);
+            var (_, result) = await CallApiPostAsync(url, null);
             return DeserializeResult<List<Issue>>(result);
         }
 

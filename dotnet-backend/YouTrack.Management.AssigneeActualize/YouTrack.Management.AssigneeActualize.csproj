@@ -18,8 +18,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\YouTrack.Management.AssigneeActualize.Contracts\YouTrack.Management.AssigneeActualize.Contracts.csproj" />
       <ProjectReference Include="..\YouTrack.Management.RelationalDal\YouTrack.Management.RelationalDal.csproj" />
       <ProjectReference Include="..\YouTrack.Management.Shared\YouTrack.Management.Shared.csproj" />
+      <ProjectReference Include="..\YouTrack.Management.YouTrack.Client.Contracts\YouTrack.Management.YouTrack.Client.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

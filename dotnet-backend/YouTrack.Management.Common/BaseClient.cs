@@ -38,31 +38,31 @@ namespace YouTrack.Management.Common
         /// <summary>
         /// Сделать get запрос
         /// </summary>
-        protected Task<(HttpStatusCode, string)> CallApiGet(string url) =>
-            CallApi(client => client.GetAsync(url));
+        protected Task<(HttpStatusCode, string)> CallApiGetAsync(string url) =>
+            CallApiAsync(client => client.GetAsync(url));
 
         /// <summary>
         /// Сделать post запрос
         /// </summary>
-        protected Task<(HttpStatusCode, string)> CallApiPost(string url, HttpContent content) =>
-            CallApi(client => client.PostAsync(url, content));
+        protected Task<(HttpStatusCode, string)> CallApiPostAsync(string url, HttpContent content) =>
+            CallApiAsync(client => client.PostAsync(url, content));
 
         /// <summary>
         /// Сделать put запрос
         /// </summary>
-        protected Task<(HttpStatusCode, string)> CallApiPut(string url, HttpContent content = null) =>
-            CallApi(client => client.PutAsync(url, content));
+        protected Task<(HttpStatusCode, string)> CallApiPutAsync(string url, HttpContent content = null) =>
+            CallApiAsync(client => client.PutAsync(url, content));
 
         /// <summary>
         /// Сделать patch запрос
         /// </summary>
-        protected Task<(HttpStatusCode, string)> CallApiPatch(string url, HttpContent content = null) =>
-            CallApi(client => client.PatchAsync(url, content));
+        protected Task<(HttpStatusCode, string)> CallApiPatchAsync(string url, HttpContent content = null) =>
+            CallApiAsync(client => client.PatchAsync(url, content));
 
         /// <summary>
         /// Сделать запрос к api
         /// </summary>
-        protected virtual async Task<(HttpStatusCode, string)> CallApi(
+        protected virtual async Task<(HttpStatusCode, string)> CallApiAsync(
             Func<HttpClient, Task<HttpResponseMessage>> callFunc)
         {
             var response = await callFunc(HttpClient);

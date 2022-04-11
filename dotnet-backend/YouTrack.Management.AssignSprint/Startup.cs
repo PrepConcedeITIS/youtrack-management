@@ -11,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using YouTrack.Management.AssigneeActualize.Client;
+using YouTrack.Management.Common;
+using YouTrack.Management.MachineLearning.Client;
+using YouTrack.Management.YouTrack.Client;
 
 namespace YouTrack.Management.AssignSprint
 {
@@ -27,6 +31,15 @@ namespace YouTrack.Management.AssignSprint
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            var httpClientConfigurator = new DefaultHttpClientConfigurator();
+            services.AddClient<AssigneeActualizeClient, AssigneeActualizeClientSettings>(Configuration,
+                httpClientConfigurator);
+            services.AddClient<YouTrackClient, YouTrackClientSettings>(Configuration,
+                new YouTrackClientConfigurator());
+            services.AddClient<MachineLearningClient, MachineLearningClientSettings>(Configuration,
+                httpClientConfigurator);
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "YouTrack.Management.AssignSprint", Version = "v1" });

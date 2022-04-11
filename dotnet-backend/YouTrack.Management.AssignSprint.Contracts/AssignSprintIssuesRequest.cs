@@ -6,13 +6,13 @@
         {
         }
 
-        public AssignSprintIssuesRequest(string sprintName, string project)
+        public AssignSprintIssuesRequest(string sprintName, string projectShortName)
         {
             SprintName = sprintName;
-            Project = project;
+            ProjectShortName = projectShortName;
         }
 
         public string SprintName { get; set; }
-        public string Project { get; set; }
+        public string ProjectShortName { get; set; }
     }
 }

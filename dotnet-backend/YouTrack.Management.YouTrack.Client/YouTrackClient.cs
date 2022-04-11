@@ -40,7 +40,7 @@ namespace YouTrack.Management.YouTrack.Client
                 }
             };
 
-            await CallApiPost(url, JsonContent(body));
+            await CallApiPostAsync(url, JsonContent(body));
         }
 
         public async Task<List<Issue>> GetDoneIssues(string projectShortName = "AVG",
@@ -48,7 +48,7 @@ namespace YouTrack.Management.YouTrack.Client
         {
             var query = "#Feature #Task #Bug #Done #{Won't fix} project: " + projectShortName;
             var url = BuildUrl($"issues?{IssueFields}&query={query.PipeTo(HttpUtility.UrlEncode)}");
-            var (statusCode, result) = await CallApiGet(url);
+            var (statusCode, result) = await CallApiGetAsync(url);
             var allResolvedIssues = DeserializeResult<List<Issue>>(result);
             var filtered = allResolvedIssues
                 .PipeTo(issues => FilterIssues(issues, exceptIssuesIdsReadable ?? new HashSet<string>(0)));
@@ -104,7 +104,7 @@ namespace YouTrack.Management.YouTrack.Client
             var query = $"Sprint: {"{" + sprint + "}"} #Unresolved #Unassigned #Feature #Task #Bug project: AVG";
             var url = BuildUrl($"issues?{IssueFields}&query={query.PipeTo(HttpUtility.UrlEncode)}");
 
-            var (statusCode, result) = await CallApiGet(url);
+            var (statusCode, result) = await CallApiGetAsync(url);
             var rawIssues = DeserializeResult<List<Issue>>(result);
 
             return rawIssues.PipeTo(FilterIssues).PipeTo(SetCustomFields).ToList();
@@ -199,7 +199,7 @@ namespace YouTrack.Management.YouTrack.Client
                 var tasks = issuesList.Skip(needToSkip).Take(take).Select(issue =>
                 {
                     var url = BuildUrl($"issues/{issue.Id}/activitiesPage?{activitiesFields}");
-                    return CallApiGet(url);
+                    return CallApiGetAsync(url);
                 });
                 needToSkip += take;
                 responses.AddRange(await Task.WhenAll(tasks));
