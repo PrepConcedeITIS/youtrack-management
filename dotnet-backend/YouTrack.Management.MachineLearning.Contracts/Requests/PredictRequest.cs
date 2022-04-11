@@ -22,19 +22,19 @@ namespace YouTrack.Management.MachineLearning.Contracts.Requests
         {
         }
 
-        public PredictRequestItem(string assigneeLogin, string complexity, string[] tags,
+        public PredictRequestItem(string assigneeLogin, string complexity, string[] tagsConcatenated,
             string issueType, string id)
         {
             AssigneeLogin = assigneeLogin;
             Complexity = complexity;
-            Tags = tags;
+            TagsConcatenated = tagsConcatenated;
             IssueType = issueType;
             Id = id;
         }
 
         public string AssigneeLogin { get; init; }
         public string Complexity { get; init; }
-        public string[] Tags { get; init; }
+        public string[] TagsConcatenated { get; init; }
         public string IssueType { get; init; }
         public string Id { get; init; }
     }

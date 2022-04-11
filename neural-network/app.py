@@ -20,9 +20,9 @@ def train_model():
 def make_predict():
     json = request.get_json()
     data: list = json['data']
-    mapper = namedtuple('IssueInput', 'AssigneeLogin Complexity IssueType TagsConcatenated Id')
+    mapper = namedtuple('IssueInput', 'assigneeLogin complexity issueType tagsConcatenated id')
     issues = list(
-        map(lambda x: mapper(x['AssigneeLogin'], x['Complexity'], x['IssueType'], x['TagsConcatenated'], x['Id']),
+        map(lambda x: mapper(x['assigneeLogin'], x['complexity'], x['issueType'], x['tagsConcatenated'], x['id']),
             data))
     result = predict(issues, load_model())
     return jsonify(result)

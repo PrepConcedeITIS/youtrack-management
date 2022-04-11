@@ -22,13 +22,15 @@ namespace YouTrack.Management.MachineLearning.Contracts.Responses
         {
         }
 
-        public PredictResponseItem(string id, double grade)
+        public PredictResponseItem(string id, string assigneeLogin, double grade)
         {
             Id = id;
             Grade = grade;
+            AssigneeLogin = assigneeLogin;
         }
 
         public string Id { get; init; }
+        public string AssigneeLogin { get; init; }
         public double Grade { get; init; }
     }
 }

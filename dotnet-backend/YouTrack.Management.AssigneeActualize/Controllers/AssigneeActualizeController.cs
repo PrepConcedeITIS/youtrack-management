@@ -15,9 +15,10 @@ namespace YouTrack.Management.AssigneeActualize.Controllers
         private readonly AssigneeActualizeService _assigneeActualizeService;
         private readonly YoutrackManagementDbContext _dbContext;
 
-        public AssigneeActualizeController(AssigneeActualizeService assigneeActualizeService)
+        public AssigneeActualizeController(AssigneeActualizeService assigneeActualizeService, YoutrackManagementDbContext dbContext)
         {
             _assigneeActualizeService = assigneeActualizeService;
+            _dbContext = dbContext;
         }
 
         [HttpPost]

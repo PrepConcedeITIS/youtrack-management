@@ -98,15 +98,16 @@ def get_best_of_n(path: str, n: int = 1):
 
 def predict(input: list[IssueInput], model):
     dataframe = pd.DataFrame(input)
-    dataframe['TagsConcatenated'] = dataframe['TagsConcatenated'].map(','.join)
-    predict_input = dataframe.drop(columns=['Id'])
-    categorical_features = ['AssigneeLogin', 'Complexity', 'IssueType', 'TagsConcatenated']
+    dataframe['tagsConcatenated'] = dataframe['tagsConcatenated'].map(','.join)
+    predict_input = dataframe.drop(columns=['id'])
+    categorical_features = ['assigneeLogin', 'complexity', 'issueType', 'tagsConcatenated']
     for feature in categorical_features:
         predict_input = encode_string_column(predict_input, feature)
     predict_result = model.predict(predict_input)
-    result = pd.concat([dataframe['Id'], pd.DataFrame(predict_result)], axis=1).values.tolist()
+    result = pd.concat([dataframe['id'], dataframe['assigneeLogin'], pd.DataFrame(predict_result)], axis=1).values.tolist()
     resultData = list(map(lambda item: {
         'id': item[0],
-        'grade': item[1]
+        'assigneeLogin': item[1],
+        'grade': item[2]
     }, result))
     return {'predictions': resultData}
