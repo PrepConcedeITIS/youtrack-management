@@ -16,7 +16,7 @@ namespace YouTrack.Management.ApiGateway.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssignSprintIssues(AssignSprintIssuesRequest request)
+        public async Task<IActionResult> AssignSprintIssues([FromBody]AssignSprintIssuesRequest request)
         {
             await _assignSprintClient.AssignIssuesToSprint(request);
             return Ok();

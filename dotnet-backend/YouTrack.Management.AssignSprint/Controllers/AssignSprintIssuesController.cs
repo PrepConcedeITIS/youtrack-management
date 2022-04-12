@@ -33,9 +33,11 @@ namespace YouTrack.Management.AssignSprint.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Assign(AssignSprintIssuesRequest request)
+        public async Task<IActionResult> Assign([FromBody] AssignSprintIssuesRequest request)
         {
             var sprintIssues = await _youTrackClient.GetIssuesBySprint(request.SprintName, request.ProjectShortName);
+            if (!sprintIssues.Any())
+                return Ok();
             var assignees = await _assigneeActualizeClient.GetAssigneesByProject(request.ProjectShortName);
             var predictionRequestItems = new List<PredictRequestItem>();
             foreach (var sprintIssue in sprintIssues)
