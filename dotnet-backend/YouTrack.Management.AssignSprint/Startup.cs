@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using YouTrack.Management.AssigneeActualize.Client;
+using YouTrack.Management.AssignSprint.Interfaces;
+using YouTrack.Management.AssignSprint.Services;
 using YouTrack.Management.Common;
 using YouTrack.Management.MachineLearning.Client;
 using YouTrack.Management.YouTrack.Client;
@@ -32,13 +27,9 @@ namespace YouTrack.Management.AssignSprint
         {
             services.AddControllers();
 
-            var httpClientConfigurator = new DefaultHttpClientConfigurator();
-            services.AddClient<AssigneeActualizeClient, AssigneeActualizeClientSettings>(Configuration,
-                httpClientConfigurator);
-            services.AddClient<YouTrackClient, YouTrackClientSettings>(Configuration,
-                new YouTrackClientConfigurator());
-            services.AddClient<MachineLearningClient, MachineLearningClientSettings>(Configuration,
-                httpClientConfigurator);
+            AddClients(services);
+
+            services.AddScoped<IIssueDistributionAlgorithm, StableMatchingAlghoritmService>();
             
             services.AddSwaggerGen(c =>
             {
@@ -64,6 +55,18 @@ namespace YouTrack.Management.AssignSprint
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private IServiceCollection AddClients(IServiceCollection services)
+        {
+            var httpClientConfigurator = new DefaultHttpClientConfigurator();
+            services.AddClient<AssigneeActualizeClient, AssigneeActualizeClientSettings>(Configuration,
+                httpClientConfigurator);
+            services.AddClient<YouTrackClient, YouTrackClientSettings>(Configuration,
+                new YouTrackClientConfigurator());
+            services.AddClient<MachineLearningClient, MachineLearningClientSettings>(Configuration,
+                httpClientConfigurator);
+            return services;
         }
     }
 }

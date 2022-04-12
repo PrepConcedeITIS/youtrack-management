@@ -1,55 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using YouTrack.Management.AssigneeActualize.Client;
 using YouTrack.Management.AssigneeActualize.Contracts;
-using YouTrack.Management.AssignSprint.Contracts;
 using YouTrack.Management.AssignSprint.Interfaces;
-using YouTrack.Management.MachineLearning.Client;
-using YouTrack.Management.MachineLearning.Contracts.Requests;
 using YouTrack.Management.MachineLearning.Contracts.Responses;
-using YouTrack.Management.YouTrack.Client;
+using YouTrack.Management.Shared.Entities.Issue;
 
-namespace YouTrack.Management.AssignSprint.Controllers
+namespace YouTrack.Management.AssignSprint.Services
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class AssignSprintIssuesController : ControllerBase
+    public class StableMatchingAlghoritmService : IIssueDistributionAlgorithm
     {
-        private readonly YouTrackClient _youTrackClient;
-        private readonly AssigneeActualizeClient _assigneeActualizeClient;
-        private readonly MachineLearningClient _machineLearningClient;
-        private readonly IIssueDistributionAlgorithm _issueDistributionAlgorithm;
-        public AssignSprintIssuesController(AssigneeActualizeClient assigneeActualizeClient,
-            YouTrackClient youTrackClient, MachineLearningClient machineLearningClient, IIssueDistributionAlgorithm issueDistributionAlgorithm)
+        public Dictionary<string, string> Handle(List<AssigneeResponse> assignees, List<Issue> sprintIssues,
+            PredictResponse predictionResult)
         {
-            _assigneeActualizeClient = assigneeActualizeClient;
-            _youTrackClient = youTrackClient;
-            _machineLearningClient = machineLearningClient;
-            _issueDistributionAlgorithm = issueDistributionAlgorithm;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Assign(AssignSprintIssuesRequest request)
-        {
-            var sprintIssues = await _youTrackClient.GetIssuesBySprint(request.SprintName, request.ProjectShortName);
-            var assignees = await _assigneeActualizeClient.GetAssigneesByProject(request.ProjectShortName);
-            var predictionRequestItems = new List<PredictRequestItem>();
-            foreach (var sprintIssue in sprintIssues)
-            {
-                foreach (var assignee in assignees)
-                {
-                    predictionRequestItems.Add(new PredictRequestItem(assignee.Login, sprintIssue.Complexity.Name,
-                        sprintIssue.Tags.Select(x => x.Name).ToArray(), sprintIssue.Type, sprintIssue.IdReadable));
-                }
-            }
-
-            var predictionResult = await _machineLearningClient
-                .GetPredictions(new PredictRequest(predictionRequestItems));
-
-            var distributionResult = _issueDistributionAlgorithm.Handle(assignees, sprintIssues, predictionResult);
-            
             var resultDictionary = new Dictionary<string, string>();
             var marryingIterations = sprintIssues.Count / assignees.Count;
             for (int i = 0; i < marryingIterations; i++)
@@ -139,23 +101,9 @@ namespace YouTrack.Management.AssignSprint.Controllers
                 {
                     resultDictionary.Add(issueId, assignee);
                 }
-
-                // var mostSuitableAssignees = assignees;
-                // var issuesBestChoices = new Dictionary<string, List<string>>();
-                // foreach (var issuesId in remainingIssuesIds)
-                // {
-                //     var issueBestAssignees = predictionResult.Predictions
-                //         .Where(x => x.Id == issuesId)
-                //         .GroupBy(x => x.Grade)
-                //         .OrderByDescending(x => x.Key)
-                //         .First()
-                //         .Select(x=>x.AssigneeLogin)
-                //         .ToList();
-                //     issuesBestChoices.Add(issuesId, issueBestAssignees);
-                // }
             }
 
-            return Ok(resultDictionary);
+            return resultDictionary;
         }
 
         private Dictionary<string, (bool married, string issue)> Marry(HashSet<string> issuesIds,
