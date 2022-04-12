@@ -27,7 +27,7 @@ def encode_string_column(input_dataframe, column_source, n_features=10):
     encoded = encoder.transform(to_encode).toarray()
     input_dataframe = input_dataframe.drop(columns=[column_source])
     encoded = pd.DataFrame(encoded)
-    encoded.columns = map(lambda x: f'{column_source}Enc{x}', encoded.columns)
+    encoded.columns = map(lambda x: f'{column_source[0].upper()}{column_source[1:]}Enc{x}', encoded.columns)
     return pd.concat([input_dataframe, encoded], axis=1)
 
 
