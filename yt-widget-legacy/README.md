@@ -1,5 +1,3 @@
-# YouTrack Issues List Widget
-
 ## Developing a Hub widget
 The following commands are available:
 

@@ -34,21 +34,45 @@ const webpackConfig = () => ({
       ...ringUiWebpackConfig.config.module.rules,
       {
         test: /\.css$/,
-        exclude: [ringUiWebpackConfig.componentsPath],
-        use: ['style-loader', {
-          loader: 'css-loader',
-          options: {
-            modules: {
-              auto: true,
-              localIdentName: '[local]_[hash:3]'
+        include: componentsPath,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              import: true,
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:7]',
+                localIdentContext: resolve('.', './src')
+              },
+              importLoaders: 1
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  ['postcss-preset-env', {
+                    stage: 3,
+                    features: {
+                      'nesting-rules': true
+                    }
+                  }]
+                ]
+              }
             }
           }
-        }]
+        ]
+      },
+      {
+        test: /\.css$/,
+        exclude: [componentsPath, ringUiWebpackConfig.componentsPath],
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.js$/,
         include: [
-          join(__dirname, 'node_modules/chai-as-promised'),
           componentsPath
         ],
         loader: 'babel-loader?cacheDirectory'

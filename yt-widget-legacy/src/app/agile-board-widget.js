@@ -35,7 +35,8 @@ export default class AgileBoardWidget extends Component {
 
   static getContentWidgetTitle =
     (agile, sprint, currentSprintMode, youTrack) => {
-      if (agile) {
+		console.log(agile);
+		if (agile) {
         let text = i18n('Board {{name}}', {name: agile.name});
         const homeUrl =
           youTrack.homeUrl.charAt(youTrack.homeUrl.length - 1) === '/'
@@ -68,7 +69,8 @@ export default class AgileBoardWidget extends Component {
     super(props);
     const {registerWidgetApi} = props;
 
-    this.state = {
+	  console.log(props);
+	  this.state = {
       isConfiguring: false,
       isLoading: true,
       noCurrentSprintError: false,

@@ -14,12 +14,6 @@ namespace YouTrack.Management.ApiGateway.Controllers
             _assigneeActualizeClient = assigneeActualizeClient;
         }
 
-        [HttpPost("assign/{sprint}")]
-        public async Task<IActionResult> Assign(string sprint)
-        {
-            return Ok();
-        }
-
         [HttpPost("actualizeProjectAssignees/{projectName}")]
         public async Task<IActionResult> ActualizeProjectAssignees(string projectName)
         {

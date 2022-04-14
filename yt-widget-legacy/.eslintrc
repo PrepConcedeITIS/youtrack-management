@@ -1,9 +1,9 @@
 {
   "parser": "babel-eslint",
   "extends": [
-    "@jetbrains",
-    "@jetbrains/eslint-config/es6",
-    "@jetbrains/eslint-config/node"
+//    "@jetbrains",
+//    "@jetbrains/eslint-config/es6",
+//    "@jetbrains/eslint-config/node",
   ],
   "env": {
     "node": true,
