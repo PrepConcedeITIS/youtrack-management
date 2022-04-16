@@ -25,12 +25,12 @@ msgstr "취소"
 msgid "Edit search query"
 msgstr "검색 쿼리 편집"
 
-#: src/app/issues-list-edit-form.js:300
-#: src/app/issues-list-edit-form.js:35
+#: src/app/assignee-management-edit-form.js:300
+#: src/app/assignee-management-edit-form.js:35
 msgid "Everything"
 msgstr "전체"
 
-#: src/app/issues-list-widget.js:72
+#: src/app/assignee-management-widget.js:72
 msgid "Issues List"
 msgstr "이슈 목록"
 
@@ -51,15 +51,15 @@ msgstr[0] "이슈 {{$count}}개 더 가져오기"
 msgid "No issues found"
 msgstr "이슈를 찾을 수 없습니다"
 
-#: src/app/issues-list-edit-form.js:226
+#: src/app/assignee-management-edit-form.js:226
 msgid "No projects"
 msgstr "프로젝트가 없습니다"
 
-#: src/app/issues-list-edit-form.js:228
+#: src/app/assignee-management-edit-form.js:228
 msgid "No saved searches"
 msgstr "저장된 검색이 없습니다"
 
-#: src/app/issues-list-edit-form.js:227
+#: src/app/assignee-management-edit-form.js:227
 msgid "No tags"
 msgstr "태그가 없습니다"
 
@@ -67,7 +67,7 @@ msgstr "태그가 없습니다"
 msgid "Oops! Something went wrong..."
 msgstr "죄송합니다. 오류가 발생했습니다."
 
-#: src/app/issues-list-edit-form.js:319
+#: src/app/assignee-management-edit-form.js:319
 msgid "Projects"
 msgstr "프로젝트"
 
@@ -75,19 +75,19 @@ msgstr "프로젝트"
 msgid "Save"
 msgstr "저장"
 
-#: src/app/issues-list-edit-form.js:331
+#: src/app/assignee-management-edit-form.js:331
 msgid "Saved searches"
 msgstr "저장된 검색"
 
-#: src/app/issues-list-edit-form.js:398
+#: src/app/assignee-management-edit-form.js:398
 msgid "Select YouTrack"
 msgstr "YouTrack 선택"
 
-#: src/app/issues-list-edit-form.js:100
+#: src/app/assignee-management-edit-form.js:100
 msgid "Selected YouTrack service is not available"
 msgstr "선택한 YouTrack 서비스를 사용할 수 없습니다"
 
-#: src/app/issues-list-edit-form.js:384
+#: src/app/assignee-management-edit-form.js:384
 msgid "Set optional title"
 msgstr "추가 제목 설정"
 
@@ -99,11 +99,11 @@ msgstr "일요일|월요일|화요일|수요일|목요일|금요일|토요일"
 msgid "Sun|Mon|Tue|Wed|Thu|Fri|Sat"
 msgstr "일|월|화|수|목|금|토"
 
-#: src/app/issues-list-edit-form.js:325
+#: src/app/assignee-management-edit-form.js:325
 msgid "Tags"
 msgstr "태그"
 
-#: src/app/issues-list-edit-form.js:306
+#: src/app/assignee-management-edit-form.js:306
 msgid "Type search query"
 msgstr "검색 쿼리 입력"
 
@@ -119,7 +119,7 @@ msgstr "위젯은 {{minutesCount}}분마다 새로고침됩니다"
 msgid "am|pm"
 msgstr "오전|오후"
 
-#: src/app/issues-list-widget.js:49
+#: src/app/assignee-management-widget.js:49
 msgid "issues"
 msgstr "이슈"
 

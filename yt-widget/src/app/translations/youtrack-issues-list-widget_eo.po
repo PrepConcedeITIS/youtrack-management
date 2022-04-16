@@ -25,12 +25,12 @@ msgstr "crwdns894671:0crwdne894671:0"
 msgid "Edit search query"
 msgstr "crwdns894672:0crwdne894672:0"
 
-#: src/app/issues-list-edit-form.js:300
-#: src/app/issues-list-edit-form.js:35
+#: src/app/assignee-management-edit-form.js:300
+#: src/app/assignee-management-edit-form.js:35
 msgid "Everything"
 msgstr "crwdns894673:0crwdne894673:0"
 
-#: src/app/issues-list-widget.js:72
+#: src/app/assignee-management-widget.js:72
 msgid "Issues List"
 msgstr "crwdns1448748:0crwdne1448748:0"
 
@@ -52,15 +52,15 @@ msgstr[1] "crwdns1449322:5{{$count}}crwdne1449322:5"
 msgid "No issues found"
 msgstr "crwdns894678:0crwdne894678:0"
 
-#: src/app/issues-list-edit-form.js:226
+#: src/app/assignee-management-edit-form.js:226
 msgid "No projects"
 msgstr "crwdns894679:0crwdne894679:0"
 
-#: src/app/issues-list-edit-form.js:228
+#: src/app/assignee-management-edit-form.js:228
 msgid "No saved searches"
 msgstr "crwdns894680:0crwdne894680:0"
 
-#: src/app/issues-list-edit-form.js:227
+#: src/app/assignee-management-edit-form.js:227
 msgid "No tags"
 msgstr "crwdns894681:0crwdne894681:0"
 
@@ -68,7 +68,7 @@ msgstr "crwdns894681:0crwdne894681:0"
 msgid "Oops! Something went wrong..."
 msgstr "crwdns894682:0crwdne894682:0"
 
-#: src/app/issues-list-edit-form.js:319
+#: src/app/assignee-management-edit-form.js:319
 msgid "Projects"
 msgstr "crwdns894683:0crwdne894683:0"
 
@@ -76,19 +76,19 @@ msgstr "crwdns894683:0crwdne894683:0"
 msgid "Save"
 msgstr "crwdns894684:0crwdne894684:0"
 
-#: src/app/issues-list-edit-form.js:331
+#: src/app/assignee-management-edit-form.js:331
 msgid "Saved searches"
 msgstr "crwdns894685:0crwdne894685:0"
 
-#: src/app/issues-list-edit-form.js:398
+#: src/app/assignee-management-edit-form.js:398
 msgid "Select YouTrack"
 msgstr "crwdns894686:0crwdne894686:0"
 
-#: src/app/issues-list-edit-form.js:100
+#: src/app/assignee-management-edit-form.js:100
 msgid "Selected YouTrack service is not available"
 msgstr "crwdns894687:0crwdne894687:0"
 
-#: src/app/issues-list-edit-form.js:384
+#: src/app/assignee-management-edit-form.js:384
 msgid "Set optional title"
 msgstr "crwdns894688:0crwdne894688:0"
 
@@ -100,11 +100,11 @@ msgstr "crwdns894689:0crwdne894689:0"
 msgid "Sun|Mon|Tue|Wed|Thu|Fri|Sat"
 msgstr "crwdns894690:0crwdne894690:0"
 
-#: src/app/issues-list-edit-form.js:325
+#: src/app/assignee-management-edit-form.js:325
 msgid "Tags"
 msgstr "crwdns894691:0crwdne894691:0"
 
-#: src/app/issues-list-edit-form.js:306
+#: src/app/assignee-management-edit-form.js:306
 msgid "Type search query"
 msgstr "crwdns894692:0crwdne894692:0"
 
@@ -120,7 +120,7 @@ msgstr "crwdns894694:0{{minutesCount}}crwdne894694:0"
 msgid "am|pm"
 msgstr "crwdns894695:0crwdne894695:0"
 
-#: src/app/issues-list-widget.js:49
+#: src/app/assignee-management-widget.js:49
 msgid "issues"
 msgstr "crwdns894696:0crwdne894696:0"
 

@@ -25,12 +25,12 @@ msgstr "Annuler"
 msgid "Edit search query"
 msgstr "Modifier la requête de recherche"
 
-#: src/app/issues-list-edit-form.js:300
-#: src/app/issues-list-edit-form.js:35
+#: src/app/assignee-management-edit-form.js:300
+#: src/app/assignee-management-edit-form.js:35
 msgid "Everything"
 msgstr "Tout"
 
-#: src/app/issues-list-widget.js:72
+#: src/app/assignee-management-widget.js:72
 msgid "Issues List"
 msgstr "Liste de tickets"
 
@@ -52,15 +52,15 @@ msgstr[1] "Charger {{$count}} tickets supplémentaires"
 msgid "No issues found"
 msgstr "Aucun ticket trouvé"
 
-#: src/app/issues-list-edit-form.js:226
+#: src/app/assignee-management-edit-form.js:226
 msgid "No projects"
 msgstr "Aucun projet"
 
-#: src/app/issues-list-edit-form.js:228
+#: src/app/assignee-management-edit-form.js:228
 msgid "No saved searches"
 msgstr "Aucune recherche enregistrée"
 
-#: src/app/issues-list-edit-form.js:227
+#: src/app/assignee-management-edit-form.js:227
 msgid "No tags"
 msgstr "Aucune balise"
 
@@ -68,7 +68,7 @@ msgstr "Aucune balise"
 msgid "Oops! Something went wrong..."
 msgstr "Oups ! Un problème est survenu..."
 
-#: src/app/issues-list-edit-form.js:319
+#: src/app/assignee-management-edit-form.js:319
 msgid "Projects"
 msgstr "Projets"
 
@@ -76,19 +76,19 @@ msgstr "Projets"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/app/issues-list-edit-form.js:331
+#: src/app/assignee-management-edit-form.js:331
 msgid "Saved searches"
 msgstr "Recherches enregistrées"
 
-#: src/app/issues-list-edit-form.js:398
+#: src/app/assignee-management-edit-form.js:398
 msgid "Select YouTrack"
 msgstr "Sélectionner YouTrack"
 
-#: src/app/issues-list-edit-form.js:100
+#: src/app/assignee-management-edit-form.js:100
 msgid "Selected YouTrack service is not available"
 msgstr "Le service YouTrack sélectionné n'est pas disponible"
 
-#: src/app/issues-list-edit-form.js:384
+#: src/app/assignee-management-edit-form.js:384
 msgid "Set optional title"
 msgstr "Définir un titre facultatif"
 
@@ -100,11 +100,11 @@ msgstr "Dimanche|Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi"
 msgid "Sun|Mon|Tue|Wed|Thu|Fri|Sat"
 msgstr "Dim|Lun|Mar|Mer|Jeu|Ven|Sam"
 
-#: src/app/issues-list-edit-form.js:325
+#: src/app/assignee-management-edit-form.js:325
 msgid "Tags"
 msgstr "Balises"
 
-#: src/app/issues-list-edit-form.js:306
+#: src/app/assignee-management-edit-form.js:306
 msgid "Type search query"
 msgstr "Saisissez la requête de recherche"
 
@@ -120,7 +120,7 @@ msgstr "Le widget s'actualise toutes les {{minutesCount}} minutes"
 msgid "am|pm"
 msgstr "am|pm"
 
-#: src/app/issues-list-widget.js:49
+#: src/app/assignee-management-widget.js:49
 msgid "issues"
 msgstr "tickets"
 

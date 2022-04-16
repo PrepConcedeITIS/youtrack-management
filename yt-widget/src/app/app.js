@@ -6,7 +6,7 @@ import {render} from 'react-dom';
 import DashboardAddons from 'hub-dashboard-addons';
 import ConfigWrapper from '@jetbrains/hub-widget-ui/dist/config-wrapper';
 
-import IssuesListWidget from './issues-list-widget';
+import AssigneeManagementWidget from './assignee-management-widget';
 import {initTranslations} from './translations';
 
 const CONFIG_FIELDS = [
@@ -18,7 +18,7 @@ DashboardAddons.registerWidget(async (dashboardApi, registerWidgetApi) => {
   const configWrapper = new ConfigWrapper(dashboardApi, CONFIG_FIELDS);
 
   render(
-    <IssuesListWidget
+    <AssigneeManagementWidget
       dashboardApi={dashboardApi}
       configWrapper={configWrapper}
       registerWidgetApi={registerWidgetApi}

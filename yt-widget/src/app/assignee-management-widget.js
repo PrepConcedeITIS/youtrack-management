@@ -7,47 +7,15 @@ import ServiceResources from '@jetbrains/hub-widget-ui/dist/service-resources';
 import {
   loadDateFormats, loadIssues, loadTotalIssuesCount, ISSUES_PACK_SIZE
 } from './resources';
-import IssuesListEditForm from './issues-list-edit-form';
+import AssigneeManagementEditForm from './assignee-management-edit-form';
 
-import './style/issues-list-widget.css';
+import './style/assignee-management-widget.css';
 import Content from './content';
 
-class IssuesListWidget extends React.Component {
+class AssigneeManagementWidget extends React.Component {
 
   static COUNTER_POLLING_PERIOD_SEC = 240; // eslint-disable-line no-magic-numbers
   static COUNTER_POLLING_PERIOD_MLS = 60000; // eslint-disable-line no-magic-numbers
-
-  static digitToUnicodeSuperScriptDigit = digitSymbol => {
-    const unicodeSuperscriptDigits = [
-      0x2070, 0x00B9, 0x00B2, 0x00B3, 0x2074, // eslint-disable-line no-magic-numbers
-      0x2075, 0x2076, 0x2077, 0x2078, 0x2079 // eslint-disable-line no-magic-numbers
-    ];
-    return String.fromCharCode(unicodeSuperscriptDigits[Number(digitSymbol)]);
-  };
-
-  static getIssueListLink = (homeUrl, context, search) => { // eslint-disable-line complexity
-    let link = homeUrl.charAt(homeUrl.length - 1) === '/' ? homeUrl : `${homeUrl}/`;
-    console.log(context);
-    if (context && context.shortName) {
-      link += `issues/${context.shortName.toLowerCase()}`;
-    } else if (context && context.$type) {
-      if (context.$type.toLowerCase().indexOf('tag') > -1) {
-        link += `tag/${context.name.toLowerCase()}-${context.id.split('-').pop()}`;
-      } else {
-        link += `search/${context.name.toLowerCase()}-${context.id.split('-').pop()}`;
-      }
-    } else {
-      link += 'issues';
-    }
-    if (search) {
-      link += `?q=${encodeURIComponent(search)}`;
-    }
-    return link;
-  };
-
-  static getFullSearchPresentation = (context, search) => [
-    context && context.name && `#{${context.name}}`, search
-  ].filter(str => !!str).join(' ') || `#${i18n('issues')}`;
 
   static getDefaultYouTrackService =
     async (dashboardApi, predefinedYouTrack) => {
@@ -80,11 +48,11 @@ class IssuesListWidget extends React.Component {
     }
   };
 
-  static getWidgetTitle = (search, context, title, issuesCount, youTrack) => {
+  static getWidgetTitle = (search, context) => {
     if (context && context.name) {
-      return `${context.name}. ${IssuesListWidget.getDefaultWidgetTitle()}`;
+      return `${context.name}. ${AssigneeManagementWidget.getDefaultWidgetTitle()}`;
     } else {
-      return IssuesListWidget.getDefaultWidgetTitle();
+      return AssigneeManagementWidget.getDefaultWidgetTitle();
     }
   };
 
@@ -110,7 +78,7 @@ class IssuesListWidget extends React.Component {
         isLoading: false,
         isLoadDataError: false
       }),
-      onRefresh: () => this.loadIssues(),
+      onRefresh: () => this.load(),
       getExternalWidgetOptions: () => ({
         authClientId:
           (this.props.configWrapper.getFieldValue('youTrack') || {}).id
@@ -127,7 +95,7 @@ class IssuesListWidget extends React.Component {
     await this.props.configWrapper.init();
 
     const youTrackService =
-      await IssuesListWidget.getDefaultYouTrackService(
+      await AssigneeManagementWidget.getDefaultYouTrackService(
         dashboardApi, this.props.configWrapper.getFieldValue('youTrack')
       );
 
@@ -161,28 +129,18 @@ class IssuesListWidget extends React.Component {
       search: search || '',
       context,
       refreshPeriod:
-        refreshPeriod || IssuesListWidget.COUNTER_POLLING_PERIOD_SEC
+        refreshPeriod || AssigneeManagementWidget.COUNTER_POLLING_PERIOD_SEC
     });
-    await this.showListFromCache(search, context);
 
     if (youTrackService && youTrackService.id) {
       const onYouTrackSpecified = async () => {
-        await this.loadIssues(search, context);
+        await this.load(search, context);
         const dateFormats = await loadDateFormats(
           this.fetchYouTrack
         );
         this.setState({dateFormats, isLoading: false});
       };
       this.setYouTrack(youTrackService, onYouTrackSpecified);
-    }
-  }
-
-  async showListFromCache(search, context) {
-    const {dashboardApi} = this.props;
-    const cache = (await dashboardApi.readCache() || {}).result;
-    if (cache && cache.search === search &&
-      (cache.context || {}).id === (context || {}).id) {
-      this.setState({issues: cache.issues, fromCache: true});
     }
   }
 
@@ -195,14 +153,14 @@ class IssuesListWidget extends React.Component {
       }
     }, async () => await onAfterYouTrackSetFunction());
 
-    if (IssuesListWidget.youTrackServiceNeedsUpdate(youTrackService)) {
+    if (AssigneeManagementWidget.youTrackServiceNeedsUpdate(youTrackService)) {
       const {dashboardApi} = this.props;
       ServiceResources.getYouTrackService(
         dashboardApi, youTrackService.id
       ).then(
         updatedYouTrackService => {
           const shouldReSetYouTrack = updatedYouTrackService &&
-            !IssuesListWidget.youTrackServiceNeedsUpdate(
+            !AssigneeManagementWidget.youTrackServiceNeedsUpdate(
               updatedYouTrackService
             ) && updatedYouTrackService.homeUrl !== homeUrl;
           if (shouldReSetYouTrack) {
@@ -232,7 +190,7 @@ class IssuesListWidget extends React.Component {
         this.setState(
           {search: search || '', context, title, refreshPeriod},
           async () => {
-            await this.loadIssues();
+            await this.load();
             await this.props.configWrapper.replace({
               search,
               context,
@@ -268,12 +226,9 @@ class IssuesListWidget extends React.Component {
     return await dashboardApi.fetch(youTrack.id, url, params);
   };
 
-  editSearchQuery = () =>
-    this.setState({isConfiguring: true});
-
   renderConfiguration = () => (
-    <div className="issues-list-widget">
-      <IssuesListEditForm
+    <div className="assignee-management-widget">
+      <AssigneeManagementEditForm
         search={this.state.search}
         context={this.state.context}
         title={this.state.title}
@@ -286,98 +241,17 @@ class IssuesListWidget extends React.Component {
     </div>
   );
 
-  loadIssues = async (search, context) => {
-    try {
-      await this.loadIssuesUnsafe(search, context);
-    } catch (error) {
-      this.setState({isLoadDataError: true});
-    }
+  load = async () => {
+    this.setState({isLoadDataError: false});
   };
-
-  loadIssuesUnsafe = async (search, context) => {
-    const currentSearch = search || this.state.search;
-    const currentContext = context || this.state.context;
-    const issues = await loadIssues(
-      this.fetchYouTrack, currentSearch, currentContext
-    );
-    if (Array.isArray(issues)) {
-      this.setState({issues, fromCache: false, isLoadDataError: false});
-      this.props.dashboardApi.storeCache({
-        search: currentSearch, context: currentContext, issues
-      });
-      this.loadIssuesCount(issues, currentSearch, currentContext);
-    }
-  };
-
-  loadNextPageOfIssues = async () => {
-    const {issues, search, context} = this.state;
-    const loadMoreCount = this.getLoadMoreCount();
-    if (loadMoreCount > 0) {
-      this.setState({isNextPageLoading: true});
-      const newIssues = await loadIssues(
-        this.fetchYouTrack, search, context, issues.length
-      );
-      this.setState({
-        isNextPageLoading: false,
-        issues: issues.concat(newIssues || [])
-      });
-    }
-  };
-
-  loadIssuesCount = async (issues, search, context) => {
-    const issuesCount = (issues.length && issues.length >= ISSUES_PACK_SIZE)
-      ? await loadTotalIssuesCount(
-        this.fetchYouTrack, issues[0], search, context
-      )
-      : (issues.length || 0);
-
-    this.setState({issuesCount});
-
-    if (issuesCount === -1) {
-      setTimeout(
-        () => this.loadIssuesCount(issues, search, context),
-        IssuesListWidget.COUNTER_POLLING_PERIOD_MLS
-      );
-    }
-  };
-
-  getLoadMoreCount() {
-    const {issuesCount, issues} = this.state;
-    return (issues && issuesCount && issuesCount > issues.length)
-      ? issuesCount - issues.length
-      : 0;
-  }
 
   renderContent = () => {
     const {
-      issues,
-      isLoading,
-      fromCache,
-      isLoadDataError,
-      dateFormats,
-      issuesCount,
-      isNextPageLoading,
-      refreshPeriod,
-      youTrack,
       context
     } = this.state;
-    const millisInSec = 1000;
     return (
       <Content
-        youTrack={youTrack}
-        issues={issues}
-        issuesCount={issuesCount}
-        isLoading={isLoading}
-        fromCache={fromCache}
-        isLoadDataError={isLoadDataError}
-        isNextPageLoading={isNextPageLoading}
-        onLoadMore={this.loadNextPageOfIssues}
-        onEdit={this.editSearchQuery}
-        dateFormats={dateFormats}
-        tickPeriod={refreshPeriod * millisInSec}
-        onTick={this.loadIssues}
-        editable={this.props.editable}
-        project={IssuesListWidget.getWidgetProject(context)}
+        project={AssigneeManagementWidget.getWidgetProject(context)}
       />
     );
   };
@@ -387,16 +261,13 @@ class IssuesListWidget extends React.Component {
     const {
       isConfiguring,
       search,
-      context,
-      title,
-      issuesCount,
-      youTrack
+      context
     } = this.state;
 
     const widgetTitle = isConfiguring
-      ? IssuesListWidget.getDefaultWidgetTitle()
-      : IssuesListWidget.getWidgetTitle(
-        search, context, title, issuesCount, youTrack
+      ? AssigneeManagementWidget.getDefaultWidgetTitle()
+      : AssigneeManagementWidget.getWidgetTitle(
+        search, context
       );
 
     return (
@@ -413,4 +284,4 @@ class IssuesListWidget extends React.Component {
 }
 
 
-export default IssuesListWidget;
+export default AssigneeManagementWidget;

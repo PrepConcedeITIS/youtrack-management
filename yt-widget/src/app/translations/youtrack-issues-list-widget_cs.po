@@ -25,12 +25,12 @@ msgstr "Zrušit"
 msgid "Edit search query"
 msgstr "Upravit vyhledávací dotaz"
 
-#: src/app/issues-list-edit-form.js:300
-#: src/app/issues-list-edit-form.js:35
+#: src/app/assignee-management-edit-form.js:300
+#: src/app/assignee-management-edit-form.js:35
 msgid "Everything"
 msgstr "Vše"
 
-#: src/app/issues-list-widget.js:72
+#: src/app/assignee-management-widget.js:72
 msgid "Issues List"
 msgstr "Seznam případů"
 
@@ -54,15 +54,15 @@ msgstr[3] ""
 msgid "No issues found"
 msgstr "Nebyly nalezeny žádné problémy"
 
-#: src/app/issues-list-edit-form.js:226
+#: src/app/assignee-management-edit-form.js:226
 msgid "No projects"
 msgstr "Žádné projekty"
 
-#: src/app/issues-list-edit-form.js:228
+#: src/app/assignee-management-edit-form.js:228
 msgid "No saved searches"
 msgstr "Žádná uložená hledání"
 
-#: src/app/issues-list-edit-form.js:227
+#: src/app/assignee-management-edit-form.js:227
 msgid "No tags"
 msgstr "Žádné štítky"
 
@@ -70,7 +70,7 @@ msgstr "Žádné štítky"
 msgid "Oops! Something went wrong..."
 msgstr "Jejda! Něco se pokazilo…"
 
-#: src/app/issues-list-edit-form.js:319
+#: src/app/assignee-management-edit-form.js:319
 msgid "Projects"
 msgstr "Projekty"
 
@@ -78,19 +78,19 @@ msgstr "Projekty"
 msgid "Save"
 msgstr "Uložit"
 
-#: src/app/issues-list-edit-form.js:331
+#: src/app/assignee-management-edit-form.js:331
 msgid "Saved searches"
 msgstr "Uložená hledání"
 
-#: src/app/issues-list-edit-form.js:398
+#: src/app/assignee-management-edit-form.js:398
 msgid "Select YouTrack"
 msgstr "Vyberte YouTrack"
 
-#: src/app/issues-list-edit-form.js:100
+#: src/app/assignee-management-edit-form.js:100
 msgid "Selected YouTrack service is not available"
 msgstr "Vybraná služba YouTrack není k dispozici"
 
-#: src/app/issues-list-edit-form.js:384
+#: src/app/assignee-management-edit-form.js:384
 msgid "Set optional title"
 msgstr "Nastavit volitelný název"
 
@@ -102,11 +102,11 @@ msgstr "Neděle|Pondělí|Úterý|Středa|Čtvrtek|Pátek|Sobota"
 msgid "Sun|Mon|Tue|Wed|Thu|Fri|Sat"
 msgstr "Ne|Po|Út|St|Čt|Pá|So"
 
-#: src/app/issues-list-edit-form.js:325
+#: src/app/assignee-management-edit-form.js:325
 msgid "Tags"
 msgstr "Štítky"
 
-#: src/app/issues-list-edit-form.js:306
+#: src/app/assignee-management-edit-form.js:306
 msgid "Type search query"
 msgstr "Zadejte vyhledávací dotaz"
 
@@ -122,7 +122,7 @@ msgstr "Widget se aktualizuje každých {{minutesCount}} minut"
 msgid "am|pm"
 msgstr "dopol|odpol"
 
-#: src/app/issues-list-widget.js:49
+#: src/app/assignee-management-widget.js:49
 msgid "issues"
 msgstr "případy"
 

@@ -1,10 +1,10 @@
 {
-  "key": "youtrack-issues-list",
+  "key": "youtrack-assignee-management",
   "version": "1.0.22",
-  "name": "Issues List",
-  "description": "Displays a list of YouTrack issues that match a search query.",
+  "name": "Assignee management",
+  "description": "Allows to automatically assign issues.",
   "applicationName": "YouTrack",
-  "author": "JetBrains",
+  "author": "Tagmir Gilyazov",
   "dependencies": {
     "YouTrack": ">=2019.1.51759",
     "Hub": ">3.0"

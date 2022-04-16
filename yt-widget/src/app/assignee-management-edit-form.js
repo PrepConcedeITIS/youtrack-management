@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import QueryAssist
-from '@jetbrains/ring-ui/components/query-assist/query-assist';
 import Input, {
   Size as InputSize
 } from '@jetbrains/ring-ui/components/input/input';
@@ -12,7 +10,6 @@ import LoaderInline
 from '@jetbrains/ring-ui/components/loader-inline/loader-inline';
 import {i18n} from 'hub-dashboard-addons/dist/localization';
 import HttpErrorHandler from '@jetbrains/hub-widget-ui/dist/http-error-handler';
-import RefreshPeriod from '@jetbrains/hub-widget-ui/dist/refresh-period';
 import ConfigurationForm
 from '@jetbrains/hub-widget-ui/dist/configuration-form';
 import ServiceResources from '@jetbrains/hub-widget-ui/dist/service-resources';
@@ -24,11 +21,11 @@ import {
   loadIssues,
   loadPinnedIssueFolders
 } from './resources';
-import './style/issues-list-widget.css';
+import './style/assignee-management-widget.css';
 
 const MIN_YOUTRACK_VERSION = '2017.4.38723';
 
-class IssuesListEditForm extends React.Component {
+class AssigneeManagementEditForm extends React.Component {
   static FILTERS_TYPES = {
     PROJECTS: 0,
     TAGS: 1,
@@ -64,7 +61,7 @@ class IssuesListEditForm extends React.Component {
       refreshPeriod: props.refreshPeriod || 0,
       selectedYouTrack,
       youTracks: [selectedYouTrack],
-      filtersType: IssuesListEditForm.FILTERS_TYPES.PROJECTS
+      filtersType: AssigneeManagementEditForm.FILTERS_TYPES.PROJECTS
     };
     this.underlineAndSuggestDebouncer = new DebounceDecorator();
   }
@@ -188,14 +185,10 @@ class IssuesListEditForm extends React.Component {
   onQueryAssistInputChange = queryAssistModel =>
     this.changeSearch(queryAssistModel.query);
 
-  onChangeRefreshPeriod = newValue =>
-    this.setState({refreshPeriod: newValue});
-
   getAppendToQueryCallback = (filterType, filter) =>
     () => this.appendToSearch(filterType, filter);
 
   renderFilterLink(filterType, filter) {
-    console.log(filter);
     return (
       <div
         key={`filter-${filter.id}`}
@@ -280,8 +273,6 @@ class IssuesListEditForm extends React.Component {
 
   renderFilteringSettings() {
     const {
-      search,
-      context,
       filtersType,
       allContexts
     } = this.state;
@@ -289,71 +280,24 @@ class IssuesListEditForm extends React.Component {
     const toSelectItem = it => it && {key: it.id, label: it.name, model: it};
 
     const contextOptions = (allContexts || []).map(toSelectItem);
-    contextOptions.unshift(IssuesListEditForm.EVERYTHING_CONTEXT_OPTION);
+    contextOptions.unshift(AssigneeManagementEditForm.EVERYTHING_CONTEXT_OPTION);
 
     return (
       <div>
-        <div>
-          <Select
-            className="issues-list-widget__search-context"
-            type={Select.Type.BUTTON}
-            size={InputSize.S}
-            data={contextOptions}
-            selected={toSelectItem(context)}
-            onSelect={this.changeSearchContext}
-            filter
-            loading={!allContexts}
-            label={i18n('Everything')}
-          />
-          <div className="issues-list-widget__search-query">
-            <QueryAssist
-              disabled={this.state.isLoading}
-              query={search}
-              placeholder={i18n('Type search query')}
-              onChange={this.onQueryAssistInputChange}
-              dataSource={this.queryAssistDataSource}
-            />
-          </div>
-        </div>
         <div className="issues-list-widget__filters-switcher">
           <Tabs
             selected={`${filtersType}`}
             onSelect={this.changeFiltersType}
           >
             <Tab
-              id={`${IssuesListEditForm.FILTERS_TYPES.PROJECTS}`}
+              id={`${AssigneeManagementEditForm.FILTERS_TYPES.PROJECTS}`}
               title={i18n('Projects')}
-            >
-              {this.renderFiltersList(filtersType)}
-            </Tab>
-            <Tab
-              id={`${IssuesListEditForm.FILTERS_TYPES.TAGS}`}
-              title={i18n('Tags')}
-            >
-              {this.renderFiltersList(filtersType)}
-            </Tab>
-            <Tab
-              id={`${IssuesListEditForm.FILTERS_TYPES.SEARCHES}`}
-              title={i18n('Saved searches')}
             >
               {this.renderFiltersList(filtersType)}
             </Tab>
           </Tabs>
         </div>
       </div>
-    );
-  }
-
-  renderRefreshPeriod() {
-    if (this.state.isLoading || this.state.errorMessage) {
-      return '';
-    }
-
-    return (
-      <RefreshPeriod
-        seconds={this.state.refreshPeriod}
-        onChange={this.onChangeRefreshPeriod}
-      />
     );
   }
 
@@ -378,7 +322,6 @@ class IssuesListEditForm extends React.Component {
         warning={errorMessage}
         isInvalid={!!errorMessage}
         isLoading={this.state.isLoading}
-        panelControls={this.renderRefreshPeriod()}
         onSave={this.submitForm}
         onCancel={this.props.onCancel}
       >
@@ -419,4 +362,4 @@ class IssuesListEditForm extends React.Component {
 }
 
 
-export default IssuesListEditForm;
+export default AssigneeManagementEditForm;

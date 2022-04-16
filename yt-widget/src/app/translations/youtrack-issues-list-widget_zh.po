@@ -25,12 +25,12 @@ msgstr "取消"
 msgid "Edit search query"
 msgstr "编辑搜索查询"
 
-#: src/app/issues-list-edit-form.js:300
-#: src/app/issues-list-edit-form.js:35
+#: src/app/assignee-management-edit-form.js:300
+#: src/app/assignee-management-edit-form.js:35
 msgid "Everything"
 msgstr "所有"
 
-#: src/app/issues-list-widget.js:72
+#: src/app/assignee-management-widget.js:72
 msgid "Issues List"
 msgstr "问题列表"
 
@@ -51,15 +51,15 @@ msgstr[0] "加载其他 {{$count}} 个问题"
 msgid "No issues found"
 msgstr "没有找到问题"
 
-#: src/app/issues-list-edit-form.js:226
+#: src/app/assignee-management-edit-form.js:226
 msgid "No projects"
 msgstr "没有项目"
 
-#: src/app/issues-list-edit-form.js:228
+#: src/app/assignee-management-edit-form.js:228
 msgid "No saved searches"
 msgstr "没有保存的搜索"
 
-#: src/app/issues-list-edit-form.js:227
+#: src/app/assignee-management-edit-form.js:227
 msgid "No tags"
 msgstr "没有标签"
 
@@ -67,7 +67,7 @@ msgstr "没有标签"
 msgid "Oops! Something went wrong..."
 msgstr "哎呀，出了些问题..."
 
-#: src/app/issues-list-edit-form.js:319
+#: src/app/assignee-management-edit-form.js:319
 msgid "Projects"
 msgstr "项目"
 
@@ -75,19 +75,19 @@ msgstr "项目"
 msgid "Save"
 msgstr "保存"
 
-#: src/app/issues-list-edit-form.js:331
+#: src/app/assignee-management-edit-form.js:331
 msgid "Saved searches"
 msgstr "保存的搜索"
 
-#: src/app/issues-list-edit-form.js:398
+#: src/app/assignee-management-edit-form.js:398
 msgid "Select YouTrack"
 msgstr "选择 YouTrack"
 
-#: src/app/issues-list-edit-form.js:100
+#: src/app/assignee-management-edit-form.js:100
 msgid "Selected YouTrack service is not available"
 msgstr "选定的 YouTrack 服务不可用"
 
-#: src/app/issues-list-edit-form.js:384
+#: src/app/assignee-management-edit-form.js:384
 msgid "Set optional title"
 msgstr "设置可选标题"
 
@@ -99,11 +99,11 @@ msgstr "星期日|星期一|星期二|星期三|星期四|星期五|星期六"
 msgid "Sun|Mon|Tue|Wed|Thu|Fri|Sat"
 msgstr "周日|周一|周二|周三|周四|周五|周六"
 
-#: src/app/issues-list-edit-form.js:325
+#: src/app/assignee-management-edit-form.js:325
 msgid "Tags"
 msgstr "标签"
 
-#: src/app/issues-list-edit-form.js:306
+#: src/app/assignee-management-edit-form.js:306
 msgid "Type search query"
 msgstr "输入搜索查询"
 
@@ -119,7 +119,7 @@ msgstr "微件每 {{minutesCount}} 分钟刷新一次"
 msgid "am|pm"
 msgstr "上午|下午"
 
-#: src/app/issues-list-widget.js:49
+#: src/app/assignee-management-widget.js:49
 msgid "issues"
 msgstr "问题"
 

@@ -7,7 +7,7 @@
 files: [
  {
   "source" : "/src/app/translations/default.pot",
-  "dest": "/widgets/youtrack-issues-list-widget/default.pot",
+  "dest": "/widgets/youtrack-assignee-management-widget/default.pot",
   "translation" : "/src/app/translations/youtrack-issues-list-widget_%two_letters_code%.po",
  }
 ]

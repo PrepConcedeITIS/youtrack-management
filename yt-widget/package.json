@@ -1,5 +1,5 @@
 {
-  "name": "youtrack-issues-list-widget",
+  "name": "youtrack-assignee-management-widget",
   "version": "1.0.0",
   "private": true,
   "config": {
@@ -9,7 +9,6 @@
   "scripts": {
     "postinstall": "npm rebuild node-sass",
     "build": "webpack -p --devtool sourcemap",
-    "test": "karma start",
     "lint": "eslint . --quiet=true && npm run stylelint",
     "stylelint": "stylelint --ignore-path .gitignore **/*.scss",
     "ci-test": "npm run lint && xvfb-maybe karma start --teamcity",
