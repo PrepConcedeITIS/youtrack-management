@@ -1,20 +1,21 @@
 {
-  "key": "youtrack-board-status-widget",
-  "name": "Agile Board Status",
-  "version": "0.0.17",
-  "description": "Displays the progress indicator for columns from an agile board in YouTrack.",
-  "author": "JetBrains",
+  "key": "youtrack-assignee-management",
+  "version": "1.0.22",
+  "name": "Assignee management",
+  "description": "Allows to automatically assign issues.",
   "applicationName": "YouTrack",
+  "author": "Tagmir Gilyazov",
   "dependencies": {
-    "YouTrack": ">=2017.4",
-    "Hub": ">=2017.4"
+    "YouTrack": ">=2019.1.51759",
+    "Hub": ">3.0"
   },
   "products": {
-    "YouTrack": ">=2017.4",
-    "Hub": ">=2017.4"
+    "YouTrack": ">=2019.1.51759",
+    "Hub": ">3.0"
   },
   "capabilities": {
     "popups": true,
     "topNavigation": true
   }
 }
+

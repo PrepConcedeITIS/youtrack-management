@@ -1,39 +1,76 @@
-const HUB_USER_FIELDS = 'id,name,login,banned,banReason,profile(email/email,avatar/url)';
+const PROJECT_CUSTOM_FIELD_FIELDS = 'id,bundle(id),field(id,name,localizedName,fieldType(id,valueType))';
+const ISSUE_FIELD_VALUE_FIELDS = 'id,name,localizedName,login,avatarUrl,name,presentation,minutes,color(id,foreground,background)';
+const ISSUE_FIELD_FIELDS = `id,value(${ISSUE_FIELD_VALUE_FIELDS}),projectCustomField(${PROJECT_CUSTOM_FIELD_FIELDS})`;
+const ISSUE_FIELDS = `id,idReadable,summary,resolved,fields(${ISSUE_FIELD_FIELDS})`;
+const NODES_FIELDS = 'tree(id,ordered)';
 
-const SPRINT_FIELDS = 'id,name,start,finish';
-const AGILE_FIELDS = `id,name,sprints(${SPRINT_FIELDS}),currentSprint(${SPRINT_FIELDS}),sprintsSettings(disableSprints,explicitQuery),columnSettings(field(id,name)),owner(id,ringId,fullName),projects(id,template)`;
-const SPRINT_BOARD_CELL_FIELDS = 'id,column(id),issues(id)';
-const SPRINT_BOARD_ROW_FIELDS = `id,cells(${SPRINT_BOARD_CELL_FIELDS})`;
-const SPRINT_BOARD_COLUMN_FIELDS = 'id,agileColumn(fieldValues(name,presentation),wipLimit(max,min))';
-const SPRINT_BOARD_FIELDS = `id,name,columns(${SPRINT_BOARD_COLUMN_FIELDS}),swimlanes(${SPRINT_BOARD_ROW_FIELDS}),orphanRow(${SPRINT_BOARD_ROW_FIELDS})`;
-const SPRINT_EXTENDED_FIELDS = `${SPRINT_FIELDS},board(${SPRINT_BOARD_FIELDS}),goal`;
+const QUERY_ASSIST_FIELDS = 'query,caret,styleRanges(start,length,style),suggestions(options,prefix,option,suffix,description,matchingStart,matchingEnd,caret,completionStart,completionEnd,group,icon)';
+const WATCH_FOLDERS_FIELDS = 'id,$type,name,query,shortName';
 
-export async function loadAgiles(fetchYouTrack) {
-  const agiles = await fetchYouTrack(`api/agiles?fields=${AGILE_FIELDS}&$top=-1`);
-  return agiles.filter(
-    ({projects}) => (projects || []).some(project => !project.template)
+const DATE_PRESENTATION_SETTINGS = 'id,dateFieldFormat(pattern,datePattern)';
+
+export const ISSUES_PACK_SIZE = 50;
+
+// eslint-disable-next-line complexity
+export async function loadIssues(fetchYouTrack, query, context, skip) {
+  const encodedQuery = encodeURIComponent(query);
+  if (context && context.id) {
+    return await fetchYouTrack(
+      `api/issueFolders/${context.id}/sortOrder/issues?fields=${ISSUE_FIELDS}&query=${encodedQuery}&$top=${ISSUES_PACK_SIZE}&$skip=${skip || 0}`
+    );
+  }
+
+  const sortedNodes = await fetchYouTrack(
+    `api/sortedIssues?fields=${NODES_FIELDS}&query=${encodedQuery}&topRoot=${ISSUES_PACK_SIZE}&skipRoot=${skip || 0}&flatten=true`
+  );
+  return await fetchYouTrack(
+    `api/issuesGetter?$top=-1&fields=${ISSUE_FIELDS}`, {
+      method: 'POST',
+      body: (sortedNodes.tree || []).map(node => ({id: node.id}))
+    }
   );
 }
 
-export async function loadAgile(fetchYouTrack, agileId) {
-  return await fetchYouTrack(`api/agiles/${agileId}?fields=${AGILE_FIELDS}`);
-}
-
-export async function loadExtendedSprintData(fetchYouTrack, boardId, sprintId) {
-  return await fetchYouTrack(`api/agiles/${boardId}/sprints/${sprintId}?fields=${SPRINT_EXTENDED_FIELDS}`);
-}
-
-export async function getHubUser(fetchHub, userHubId, profileBaseUrl) {
-  const hubUser = await fetchHub(
-    `api/rest/users/${userHubId}?fields=${HUB_USER_FIELDS}`
+export async function loadTotalIssuesCount(
+  fetchYouTrack, issue, query, context
+) {
+  const searchPage = await fetchYouTrack(
+    'api/issuesGetter/count?fields=count', {
+      method: 'POST',
+      body: {
+        folder: context && context.id && {
+          $type: context.$type,
+          id: context.id
+        } || null,
+        query: query || null
+      }
+    }
   );
+  return searchPage && searchPage.count;
+}
+
+export async function loadPinnedIssueFolders(fetchYouTrack, loadAll) {
+  const packSize = 100;
+  return await fetchYouTrack(`api/userIssueFolders?fields=${WATCH_FOLDERS_FIELDS}&$top=${loadAll ? -1 : packSize}`);
+}
+
+export async function loadDateFormats(fetchYouTrack) {
+  const generalUserProfile = await fetchYouTrack(`api/admin/users/me/profiles/general?fields=${DATE_PRESENTATION_SETTINGS}`);
+  const dateFormats =
+    (generalUserProfile && generalUserProfile.dateFieldFormat) || {};
   return {
-    name: hubUser.name,
-    login: hubUser.login,
-    banned: hubUser.banned,
-    banReason: hubUser.banReason,
-    email: hubUser.profile.email && hubUser.profile.email.email,
-    avatarUrl: hubUser.profile.avatar.url,
-    href: `${profileBaseUrl}/users/${hubUser.id}`
+    datePattern: toFechaFormat(dateFormats.datePattern),
+    dateTimePattern: toFechaFormat(dateFormats.pattern)
   };
+
+  function toFechaFormat(pattern) {
+    return (pattern || '').replace(/y/g, 'Y').replace(/d/g, 'D').replace('aaa', 'A');
+  }
+}
+
+export async function underlineAndSuggest(fetchYouTrack, query, caret, folder) {
+  return await fetchYouTrack(`api/search/assist?fields=${QUERY_ASSIST_FIELDS}`, {
+    method: 'POST',
+    body: {query, caret, folder}
+  });
 }
