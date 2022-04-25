@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace YouTrack.Management.Shared.Entities.Issue
 {
     public class Assignee : HasId, ICustomFieldValue
     {
-        public string Login { get; set; }
-        public string FullName { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public virtual ICollection<AssigneeCompetenceRelation> Competences { get; set; }
-
-        public bool Banned { get; set; }
-
+        public Assignee(string login, string fullName, string name, string id, string email,
+            string projectName) : base(id)
+        {
+            Login = login;
+            FullName = fullName;
+            Name = name;
+            Email = email;
+            ProjectName = projectName;
+        }
+        [JsonConstructor]
         public Assignee(string login, string fullName, string name, string id, string email) : base(id)
         {
             Login = login;
@@ -20,6 +23,15 @@ namespace YouTrack.Management.Shared.Entities.Issue
             Name = name;
             Email = email;
         }
+        
+        public string Login { get; set; }
+        public string FullName { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public virtual ICollection<AssigneeCompetenceRelation> Competences { get; set; }
+
+        public bool Banned { get; set; }
+        public string ProjectName { get; set; }
     }
 
     public class AssigneeEqualityComparer : IEqualityComparer<Assignee>
@@ -30,7 +42,8 @@ namespace YouTrack.Management.Shared.Entities.Issue
             if (ReferenceEquals(x, null)) return false;
             if (ReferenceEquals(y, null)) return false;
             if (x.GetType() != y.GetType()) return false;
-            return x.Login == y.Login && x.FullName == y.FullName && x.Name == y.Name && x.Email == y.Email && x.Banned == y.Banned;
+            return x.Login == y.Login && x.FullName == y.FullName && x.Name == y.Name && x.Email == y.Email &&
+                   x.Banned == y.Banned;
         }
 
         public int GetHashCode(Assignee obj)

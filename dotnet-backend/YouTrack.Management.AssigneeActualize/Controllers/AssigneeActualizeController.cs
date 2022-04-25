@@ -15,17 +15,17 @@ namespace YouTrack.Management.AssigneeActualize.Controllers
         private readonly AssigneeActualizeService _assigneeActualizeService;
         private readonly YoutrackManagementDbContext _dbContext;
 
-        public AssigneeActualizeController(AssigneeActualizeService assigneeActualizeService, YoutrackManagementDbContext dbContext)
+        public AssigneeActualizeController(AssigneeActualizeService assigneeActualizeService,
+            YoutrackManagementDbContext dbContext)
         {
             _assigneeActualizeService = assigneeActualizeService;
             _dbContext = dbContext;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateAssignees()
+        [HttpPost("{projectShortName}")]
+        public async Task<IActionResult> UpdateAssignees(string projectShortName)
         {
-            //todo: by project
-            await _assigneeActualizeService.Handle();
+            await _assigneeActualizeService.Handle(projectShortName);
             return Ok();
         }
 
@@ -33,8 +33,8 @@ namespace YouTrack.Management.AssigneeActualize.Controllers
         public async Task<ActionResult<List<AssigneeResponse>>> GetAssignees(string projectShortName)
         {
             var result = await _dbContext.Assignees
-                //todo: .Where(x=>x.ProjectName == projectShortName)
-                .Select(x => new AssigneeResponse("AVG", x.Login))
+                .Where(x => x.ProjectName == projectShortName)
+                .Select(x => new AssigneeResponse(projectShortName, x.Login))
                 .ToListAsync();
             return result;
         }

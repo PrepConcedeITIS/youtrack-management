@@ -21,26 +21,34 @@ namespace YouTrack.Management.AssigneeActualize
             _httpClient = httpClientFactory.CreateClient("youtrack-hub");
         }
 
-        public async Task Handle()
+        public async Task Handle(string projectShortName)
         {
-            var assignees = (await GetProjectAssignees("Average project")).ToList();
-            //todo: by project
-            var existing = _dbContext.Assignees.Where(x => true).ToList();
-            var toAdd = assignees.ExceptBy(existing, assignee => assignee.Id);
-            var toDelete = existing.ExceptBy(assignees, assignee => assignee.Id);
+            var assignees = (await GetProjectAssignees(projectShortName)).ToList();
+            var existing = _dbContext.Assignees
+                .Where(x => x.ProjectName == projectShortName)
+                .ToList();
+            var toAdd = assignees
+                .ExceptBy(existing, assignee => assignee.Id)
+                .ToList();
+            var toDelete = existing
+                .ExceptBy(assignees, assignee => assignee.Id);
+
+            toAdd.ForEach(assignee => assignee.ProjectName = projectShortName);
+
             await _dbContext.Assignees.AddRangeAsync(toAdd);
             _dbContext.Assignees.RemoveRange(toDelete);
+
             await _dbContext.SaveChangesAsync();
         }
 
         private async Task<IEnumerable<Assignee>> GetProjectAssignees(string projectName)
         {
             var httpResponse = await _httpClient.GetAsync(
-                "projectteams?fields=project(name,id),users(id,login,fullName,email,name,banned)");
+                "projectteams?fields=project(name,id,key),users(id,login,fullName,email,name,banned)");
             var content = await httpResponse.Content.ReadAsStringAsync();
             var teamsResponse = JsonConvert.DeserializeObject<ProjectsTeamResponse>(content);
             return teamsResponse.ProjectTeams
-                .FirstOrDefault(team => team.Project.Name == projectName)?.Users
+                .FirstOrDefault(team => team.Project.Key == projectName)?.Users
                 .Where(x => x.Login != "root");
         }
     }

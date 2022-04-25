@@ -12,9 +12,9 @@ namespace YouTrack.Management.AssigneeActualize.Client
         {
         }
 
-        public async Task ActualizeAssigneesInDatabase()
+        public async Task ActualizeAssigneesInDatabase(string projectName)
         {
-            var url = BuildUrl("AssigneeActualize");
+            var url = BuildUrl($"AssigneeActualize/{projectName}");
             await CallApiPostAsync(url, null);
         }
 
