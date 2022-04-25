@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using MoreLinq.Extensions;
 using Newtonsoft.Json;
 using YouTrack.Management.AssigneeActualize.Entities;
 using YouTrack.Management.RelationalDal;
@@ -22,8 +23,13 @@ namespace YouTrack.Management.AssigneeActualize
 
         public async Task Handle()
         {
-            var assignees = await GetProjectAssignees("Average project");
-            await _dbContext.Assignees.AddRangeAsync(assignees);
+            var assignees = (await GetProjectAssignees("Average project")).ToList();
+            //todo: by project
+            var existing = _dbContext.Assignees.Where(x => true).ToList();
+            var toAdd = assignees.ExceptBy(existing, assignee => assignee.Id);
+            var toDelete = existing.ExceptBy(assignees, assignee => assignee.Id);
+            await _dbContext.Assignees.AddRangeAsync(toAdd);
+            _dbContext.Assignees.RemoveRange(toDelete);
             await _dbContext.SaveChangesAsync();
         }
 
