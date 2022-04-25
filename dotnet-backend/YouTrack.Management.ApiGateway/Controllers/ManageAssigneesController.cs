@@ -14,7 +14,7 @@ namespace YouTrack.Management.ApiGateway.Controllers
             _assigneeActualizeClient = assigneeActualizeClient;
         }
 
-        [HttpPost("actualizeProjectAssignees/{projectName}")]
+        [HttpPost("{projectName}")]
         public async Task<IActionResult> ActualizeProjectAssignees(string projectName)
         {
             await _assigneeActualizeClient.ActualizeAssigneesInDatabase();

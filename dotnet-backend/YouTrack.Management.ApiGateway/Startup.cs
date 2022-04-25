@@ -10,6 +10,7 @@ using YouTrack.Management.Common;
 using YouTrack.Management.MachineLearning.Client;
 using YouTrack.Management.ResolvedIssues.Client;
 using YouTrack.Management.TrainMockDataGeneration.Client;
+using YouTrack.Management.YouTrack.Client;
 
 namespace YouTrack.Management.ApiGateway
 {
@@ -69,6 +70,7 @@ namespace YouTrack.Management.ApiGateway
                 httpClientConfigurator);
             services.AddClient<MachineLearningClient, MachineLearningClientSettings>(Configuration,
                 httpClientConfigurator);
+            services.AddClient<YouTrackClient, YouTrackClientSettings>(Configuration, new YouTrackClientConfigurator());
 
             return services;
         }

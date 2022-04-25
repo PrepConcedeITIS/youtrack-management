@@ -3,12 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using YouTrack.Management.AssigneeActualize.Client;
-using YouTrack.Management.AssigneeActualize.Contracts;
 using YouTrack.Management.AssignSprint.Contracts;
 using YouTrack.Management.AssignSprint.Interfaces;
 using YouTrack.Management.MachineLearning.Client;
 using YouTrack.Management.MachineLearning.Contracts.Requests;
-using YouTrack.Management.MachineLearning.Contracts.Responses;
 using YouTrack.Management.YouTrack.Client;
 
 namespace YouTrack.Management.AssignSprint.Controllers
@@ -35,7 +33,7 @@ namespace YouTrack.Management.AssignSprint.Controllers
         [HttpPost]
         public async Task<IActionResult> Assign([FromBody] AssignSprintIssuesRequest request)
         {
-            var sprintIssues = await _youTrackClient.GetIssuesBySprint(request.SprintName, request.ProjectShortName);
+            var sprintIssues = await _youTrackClient.GetUnassignedIssuesBySprint(request.SprintName, request.ProjectShortName);
             if (!sprintIssues.Any())
                 return Ok();
             var assignees = await _assigneeActualizeClient.GetAssigneesByProject(request.ProjectShortName);
@@ -59,80 +57,6 @@ namespace YouTrack.Management.AssignSprint.Controllers
             await Task.WhenAll(tasks);
 
             return Ok();
-        }
-
-        private Dictionary<string, (bool married, string issue)> Marry(HashSet<string> issuesIds,
-            List<AssigneeResponse> assignees, PredictResponse predictionResult)
-        {
-            var groupedByAssignee = predictionResult.Predictions
-                .GroupBy(predict => predict.AssigneeLogin)
-                .Select((group, index) =>
-                {
-                    var assignee = group.Key;
-                    var issuesByResult = group
-                        .Where(x => issuesIds.Contains(x.Id))
-                        .OrderByDescending(x => x.Grade)
-                        .Select(x => x.Id)
-                        .ToList();
-                    return ((assignee, index), issuesByResult);
-                })
-                .ToDictionary(x => x.Item1.assignee);
-            var groupedByIssues = predictionResult.Predictions
-                .Where(x => issuesIds.Contains(x.Id))
-                .GroupBy(x => x.Id)
-                .Select((group, index) =>
-                {
-                    var assigneesByPreference =
-                        group.OrderByDescending(x => x.Grade).Select(x => x.AssigneeLogin).ToList();
-                    var issueId = group.Key;
-                    return ((issueId, index), assigneesByPreference);
-                })
-                .ToDictionary(x => x.Item1.issueId);
-
-            Dictionary<string, (bool married, string issue)> assigneeMarriage =
-                assignees.ToDictionary(x => x.Login, _ => (false, default(string)));
-
-            while (assigneeMarriage.Any(x => !x.Value.married))
-            {
-                var freeAssignee = assigneeMarriage.First(x => !x.Value.married);
-                var marryingAssigneeLogin = freeAssignee.Key;
-                var preferredIssueByAssignee = groupedByAssignee[marryingAssigneeLogin].issuesByResult[0];
-
-                //задача свободна
-                if (assigneeMarriage.All(x => x.Value.issue != preferredIssueByAssignee))
-                {
-                    assigneeMarriage[marryingAssigneeLogin] = (true, preferredIssueByAssignee);
-                }
-                else
-                {
-                    var previouslySelectedAssigneeLogin = assigneeMarriage
-                        .Single(x => x.Value.issue == preferredIssueByAssignee && x.Value.married).Key;
-
-                    var issuePreferences = groupedByIssues[preferredIssueByAssignee].assigneesByPreference;
-                    // индекс предпочтительности - меньше лучше
-                    var previousAssigneeIndex = issuePreferences.IndexOf(previouslySelectedAssigneeLogin);
-                    var currentAssigneeIndex = issuePreferences.IndexOf(marryingAssigneeLogin);
-                    //else if w предпочитает M своему текущему жениху M'
-                    if (currentAssigneeIndex < previousAssigneeIndex)
-                    {
-                        assigneeMarriage[marryingAssigneeLogin] = (true, preferredIssueByAssignee);
-
-                        //вычёркиваем w из списка предпочтений M'
-                        groupedByAssignee[previouslySelectedAssigneeLogin].issuesByResult
-                            .Remove(preferredIssueByAssignee);
-
-                        //помечаем M' свободным
-                        assigneeMarriage[previouslySelectedAssigneeLogin] = (false, null);
-                    }
-                    else
-                    {
-                        //вычёркиваем w из списка предпочтений M
-                        groupedByAssignee[marryingAssigneeLogin].issuesByResult.Remove(preferredIssueByAssignee);
-                    }
-                }
-            }
-
-            return assigneeMarriage;
         }
     }
 }

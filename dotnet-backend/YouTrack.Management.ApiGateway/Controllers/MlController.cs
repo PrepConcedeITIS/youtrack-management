@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using YouTrack.Management.MachineLearning.Client;
+using YouTrack.Management.MachineLearning.Contracts.Requests;
 using YouTrack.Management.ResolvedIssues.Client;
 
 namespace YouTrack.Management.ApiGateway.Controllers
@@ -17,10 +18,10 @@ namespace YouTrack.Management.ApiGateway.Controllers
             _machineLearningClient = machineLearningClient;
         }
 
-        [HttpPost("train")]
-        public async Task<IActionResult> TrainModel([FromQuery] bool withMock)
+        [HttpPost("Train")]
+        public async Task<IActionResult> TrainModel([FromBody] TrainModelRequest request)
         {
-            var resolvedIssues = await _resolvedIssuesClient.GetIssuesMlCsv(withMock);
+            var resolvedIssues = await _resolvedIssuesClient.GetIssuesMlCsv(request.WithMock);
             var trainResult = await _machineLearningClient.TrainModel(resolvedIssues);
             return Ok();
         }

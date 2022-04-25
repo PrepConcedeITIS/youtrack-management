@@ -14,5 +14,6 @@
       <ProjectReference Include="..\YouTrack.Management.MachineLearning.Client\YouTrack.Management.MachineLearning.Client.csproj" />
       <ProjectReference Include="..\YouTrack.Management.ResolvedIssues.Client\YouTrack.Management.ResolvedIssues.Client.csproj" />
       <ProjectReference Include="..\YouTrack.Management.TrainMockDataGeneration.Client\YouTrack.Management.TrainMockDataGeneration.Client.csproj" />
+      <ProjectReference Include="..\YouTrack.Management.YouTrack.Client\YouTrack.Management.YouTrack.Client.csproj" />
     </ItemGroup>
 </Project>

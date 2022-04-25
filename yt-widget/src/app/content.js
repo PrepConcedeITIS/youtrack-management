@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withTimerHOC from '@jetbrains/hub-widget-ui/dist/timer';
 
-
 import './style/assignee-management-widget.css';
 import {Button, H2} from '@jetbrains/ring-ui';
 import axios from 'axios';
@@ -25,17 +24,17 @@ class Content extends React.Component {
     const {
       project
     } = this.props;
-    const host = 'https://localhost:14000/';
+    const host = 'https://localhost:14000';
 
     function assignCurrentSprint() {
-      return axios.post(`${host}/AssignSprint`, {
+      return axios.post(`${host}/Sprint/AssignIssues`, {
         sprintName: 'Sprint 1',
         projectShortName: project
       });
     }
 
     function unAssignCurrentSprint() {
-      return axios.post(`${host}/unAssignSprint`, {
+      return axios.post(`${host}/Sprint/DiscardAssignees`, {
         sprintName: 'Sprint 1',
         projectShortName: project
       });
@@ -46,7 +45,7 @@ class Content extends React.Component {
     }
 
     function reTrainModel() {
-      return axios.post(`${host}/Ml/train`, {
+      return axios.post(`${host}/Ml/Train`, {
         projectShortName: project,
         withMock: true
       });

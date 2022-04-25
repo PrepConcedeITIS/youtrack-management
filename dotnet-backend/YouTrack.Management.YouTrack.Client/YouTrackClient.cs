@@ -40,9 +40,26 @@ namespace YouTrack.Management.YouTrack.Client
                 }
             };
 
-            await CallApiPostAsync(url, JsonContent(body));
+            var (r, c) = await CallApiPostAsync(url, JsonContent(body));
         }
 
+        public async Task UnAssignIssue(string issueIdReadable)
+        {
+            var url = BuildUrl($"issues/{issueIdReadable}");
+            var body = new
+            {
+                customFields = new[]
+                {
+                    new ChangeAssigneeRequest
+                    {
+                        Value = null
+                    }
+                }
+            };
+
+            var (r, c) = await CallApiPostAsync(url, JsonContent(body));
+        }
+        
         public async Task<List<Issue>> GetDoneIssues(string projectShortName = "AVG",
             HashSet<string> exceptIssuesIdsReadable = null)
         {
@@ -99,9 +116,25 @@ namespace YouTrack.Management.YouTrack.Client
             }
         }
 
+        public async Task<List<Issue>> GetUnassignedIssuesBySprint(string sprint = "Sprint 1", string projectShortName = "AVG")
+        {
+            var query = $"Sprint: {"{" + sprint + "}"} #Unresolved #Unassigned #Feature #Task #Bug project: {projectShortName}";
+            var url = BuildUrl($"issues?{IssueFields}&query={query.PipeTo(HttpUtility.UrlEncode)}");
+
+            var (statusCode, result) = await CallApiGetAsync(url);
+            var rawIssues = DeserializeResult<List<Issue>>(result);
+
+            return rawIssues.PipeTo(FilterIssues).PipeTo(SetCustomFields).ToList();
+
+            IEnumerable<Issue> FilterIssues(IEnumerable<Issue> issues)
+            {
+                return issues
+                    .Where(issue => issue.Tags.Any());
+            }
+        }
         public async Task<List<Issue>> GetIssuesBySprint(string sprint = "Sprint 1", string projectShortName = "AVG")
         {
-            var query = $"Sprint: {"{" + sprint + "}"} #Unresolved #Unassigned #Feature #Task #Bug project: AVG";
+            var query = $"Sprint: {"{" + sprint + "}"} #Unresolved #Feature #Task #Bug project: {projectShortName}";
             var url = BuildUrl($"issues?{IssueFields}&query={query.PipeTo(HttpUtility.UrlEncode)}");
 
             var (statusCode, result) = await CallApiGetAsync(url);

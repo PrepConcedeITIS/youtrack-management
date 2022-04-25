@@ -83,14 +83,7 @@ namespace YouTrack.Management.Common
             Func<Task<TResult>> readResult)
         {
             var result = await readResult();
-            try
-            {
-                callApiResponse.EnsureSuccessStatusCode();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            callApiResponse.EnsureSuccessStatusCode();
 
             return result;
         }
