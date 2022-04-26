@@ -1,22 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Quartz;
 using YouTrack.Management.Common;
 using YouTrack.Management.MachineLearning.Client;
+using YouTrack.Management.ModelRetrain.EF;
 using YouTrack.Management.ResolvedIssues.Client;
 
-namespace YouTrack.Management.ReTrain
+namespace YouTrack.Management.ModelRetrain
 {
     public class Startup
     {
@@ -30,9 +25,11 @@ namespace YouTrack.Management.ReTrain
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<RetrainDbContext>(builder =>
+                builder.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddQuartz(q =>
             {
-                q.ScheduleJob<ReTrainJob>(triggerConfigurator =>
+                q.ScheduleJob<RetrainJob>(triggerConfigurator =>
                     triggerConfigurator.WithCronSchedule("0 40 19 * * ?"));
             });
 
@@ -43,7 +40,7 @@ namespace YouTrack.Management.ReTrain
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "YouTrack.Management.ReTrain", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "YouTrack.Management.ModelRetrain", Version = "v1" });
             });
         }
 
@@ -54,7 +51,7 @@ namespace YouTrack.Management.ReTrain
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "YouTrack.Management.ReTrain v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "YouTrack.Management.ModelRetrain v1"));
             }
 
             app.UseHttpsRedirection();

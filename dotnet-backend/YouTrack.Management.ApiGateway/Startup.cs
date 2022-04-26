@@ -8,6 +8,7 @@ using YouTrack.Management.AssigneeActualize.Client;
 using YouTrack.Management.AssignSprint.Client;
 using YouTrack.Management.Common;
 using YouTrack.Management.MachineLearning.Client;
+using YouTrack.Management.ModelRetrain.Client;
 using YouTrack.Management.ResolvedIssues.Client;
 using YouTrack.Management.TrainMockDataGeneration.Client;
 using YouTrack.Management.YouTrack.Client;
@@ -67,6 +68,8 @@ namespace YouTrack.Management.ApiGateway
             services.AddClient<TrainMockDataGenerationClient, TrainMockDataGenerationClientSettings>(Configuration,
                 httpClientConfigurator);
             services.AddClient<AssignSprintClient, AssignSprintClientSettings>(Configuration,
+                httpClientConfigurator);
+            services.AddClient<ModelRetrainClient, ModelRetrainClientSettings>(Configuration,
                 httpClientConfigurator);
             services.AddClient<MachineLearningClient, MachineLearningClientSettings>(Configuration,
                 httpClientConfigurator);

@@ -31,13 +31,13 @@ def encode_string_column(input_dataframe, column_source, n_features=10):
     return pd.concat([input_dataframe, encoded], axis=1)
 
 
-def save_model(model):
-    os.makedirs('models', exist_ok=True)
-    joblib.dump(model, f'models/random-forest-{datetime.utcnow().strftime("%Y-%m-%d-%H-%M")}.joblib')
+def save_model(model, project):
+    os.makedirs(f'models/{project}', exist_ok=True)
+    joblib.dump(model, f'models/{project}/random-forest-{datetime.utcnow().strftime("%Y-%m-%d-%H-%M")}.joblib')
 
 
-def load_model():
-    models = glob.glob("models/random-forest-*.joblib")
+def load_model(project):
+    models = glob.glob("models/project/random-forest-*.joblib")
     last = sorted(models, reverse=True)[0]
     return joblib.load(last)
 

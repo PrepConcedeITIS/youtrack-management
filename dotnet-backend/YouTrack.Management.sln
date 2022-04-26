@@ -48,7 +48,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.AssignS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.AssigneeActualize.Contracts", "YouTrack.Management.AssigneeActualize.Contracts\YouTrack.Management.AssigneeActualize.Contracts.csproj", "{4A48FBD3-6AF2-4A12-8D6F-F7A8EEB38A58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.ReTrain", "YouTrack.Management.ReTrain\YouTrack.Management.ReTrain.csproj", "{5FF34DBF-40E4-495A-9FC2-CBE0D40A521C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.ModelRetrain", "YouTrack.Management.ModelRetrain\YouTrack.Management.ModelRetrain.csproj", "{5FF34DBF-40E4-495A-9FC2-CBE0D40A521C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "YouTrack.Management.ModelRetrain", "YouTrack.Management.ModelRetrain", "{08E77E4D-7A45-40FD-BA16-29DB504B9D40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTrack.Management.ModelRetrain.Client", "YouTrack.Management.ModelRetrain.Client\YouTrack.Management.ModelRetrain.Client.csproj", "{4E266635-23E7-4177-80BC-0CDA9C1AD186}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -136,6 +140,10 @@ Global
 		{5FF34DBF-40E4-495A-9FC2-CBE0D40A521C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FF34DBF-40E4-495A-9FC2-CBE0D40A521C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FF34DBF-40E4-495A-9FC2-CBE0D40A521C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E266635-23E7-4177-80BC-0CDA9C1AD186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E266635-23E7-4177-80BC-0CDA9C1AD186}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E266635-23E7-4177-80BC-0CDA9C1AD186}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E266635-23E7-4177-80BC-0CDA9C1AD186}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5D4A6DD3-FD22-4781-9F28-B02378D6B9B8} = {2ED9C8EC-3F2A-479F-98F9-F4312BB29A5D}
@@ -153,5 +161,7 @@ Global
 		{A7CE6415-ACF1-4AAA-8A74-E5F0F6E348DD} = {9746F532-78FB-4DD4-96A1-CB6E2901B031}
 		{BEDD1407-00F2-475B-8236-87591058784D} = {9746F532-78FB-4DD4-96A1-CB6E2901B031}
 		{4A48FBD3-6AF2-4A12-8D6F-F7A8EEB38A58} = {AF1F5DC8-DF51-4497-A54C-12B00FE929A9}
+		{5FF34DBF-40E4-495A-9FC2-CBE0D40A521C} = {08E77E4D-7A45-40FD-BA16-29DB504B9D40}
+		{4E266635-23E7-4177-80BC-0CDA9C1AD186} = {08E77E4D-7A45-40FD-BA16-29DB504B9D40}
 	EndGlobalSection
 EndGlobal
