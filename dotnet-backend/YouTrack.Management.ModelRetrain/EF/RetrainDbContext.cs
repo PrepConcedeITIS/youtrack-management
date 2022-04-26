@@ -10,5 +10,11 @@ namespace YouTrack.Management.ModelRetrain.EF
         }
 
         public DbSet<Project> Projects { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Project>()
+                .HasIndex(u => u.ProjectKey)
+                .IsUnique();
+        }
     }
 }
