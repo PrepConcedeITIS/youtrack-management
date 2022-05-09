@@ -63,7 +63,7 @@ namespace YouTrack.Management.YouTrack.Client
         public async Task<List<Issue>> GetDoneIssues(string projectShortName = "AVG",
             HashSet<string> exceptIssuesIdsReadable = null)
         {
-            var query = "#Feature #Task #Bug #Done #{Won't fix} project: " + projectShortName;
+            var query = $"#Feature #Task #Bug #Done #{{Won't fix}} project: {projectShortName}";
             var url = BuildUrl($"issues?{IssueFields}&query={query.PipeTo(HttpUtility.UrlEncode)}");
             var (statusCode, result) = await CallApiGetAsync(url);
             var allResolvedIssues = DeserializeResult<List<Issue>>(result);

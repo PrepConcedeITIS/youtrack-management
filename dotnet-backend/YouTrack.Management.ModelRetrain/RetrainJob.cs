@@ -26,8 +26,7 @@ namespace YouTrack.Management.ModelRetrain
             var projectsToRetrain = _dbContext.Projects.Where(x => x.RetrainEnabled).ToList();
             var tasks = projectsToRetrain.Select(async x =>
             {
-                //todo: by project
-                var resolvedIssues = await _resolvedIssuesClient.GetIssuesMlCsv(true);
+                var resolvedIssues = await _resolvedIssuesClient.GetIssuesMlCsv(x.ProjectKey, true);
                 var trainResult = await _machineLearningClient.TrainModel(resolvedIssues, x.ProjectKey);
             });
             await Task.WhenAll(tasks);

@@ -25,7 +25,7 @@ namespace YouTrack.Management.ApiGateway.Controllers
         [HttpPost("Train")]
         public async Task<IActionResult> TrainModel([FromBody] TrainModelRequest request)
         {
-            var resolvedIssues = await _resolvedIssuesClient.GetIssuesMlCsv(request.WithMock);
+            var resolvedIssues = await _resolvedIssuesClient.GetIssuesMlCsv(request.ProjectShortName, request.WithMock);
             var trainResult = await _machineLearningClient.TrainModel(resolvedIssues, request.ProjectShortName);
             return Ok();
         }
