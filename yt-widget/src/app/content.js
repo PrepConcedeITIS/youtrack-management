@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withTimerHOC from '@jetbrains/hub-widget-ui/dist/timer';
 
 import './style/assignee-management-widget.css';
-import {Button, H2} from '@jetbrains/ring-ui';
+import {Button, Checkbox, H2, Text} from '@jetbrains/ring-ui';
 import axios from 'axios';
 
 class Content extends React.Component {
@@ -16,15 +16,40 @@ class Content extends React.Component {
     super(props);
 
     this.state = {
-      expandedIssueId: null
+      reTrainEnabled: false
     };
+
+    this.setRetrainState = this.setRetrainState.bind(this);
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps && this.props && prevProps.project !== this.props.project) {
+      this.getRetrainState().then(x => {
+        this.setState({reTrainEnabled: x.data});
+      });
+    }
+  }
+
+  host() {
+    return 'https://localhost:14000';
+  }
+
+  getRetrainState() {
+    const promiseRes = axios.get(`${this.host()}/Ml/RetrainingState/${this.props.project}`);
+    return promiseRes;
+  }
+
+  setRetrainState(state) {
+    this.setState({reTrainEnabled: state});
   }
 
   renderWidgetBody() {
     const {
       project
     } = this.props;
-    const host = 'https://localhost:14000';
+    const host = this.host();
+    const setRetrainState = this.setRetrainState;
 
     function assignCurrentSprint() {
       return axios.post(`${host}/Sprint/AssignIssues`, {
@@ -51,6 +76,13 @@ class Content extends React.Component {
       });
     }
 
+    function changeRetrainState() {
+      axios.post(`${host}/Ml/SwitchRetrainingState/${project}`).then(x => {
+        setRetrainState(x.data);
+      });
+
+    }
+
     return (
       <div className="manage-assignees-widget">
         <H2>{'Управление спринтами'}</H2>
@@ -73,6 +105,13 @@ class Content extends React.Component {
           onMouseDown={reTrainModel}
         >{'Переобучить модель'}
         </Button>
+        <div className={'row'}>
+          <Text>{'Включить автоматическое переобучение: '}</Text>
+          <Checkbox
+            checked={this.state.reTrainEnabled}
+            onChange={changeRetrainState}
+          />
+        </div>
       </div>
     );
   }

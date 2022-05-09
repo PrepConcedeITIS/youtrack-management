@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using YouTrack.Management.ModelRetrain.EF;
 using YouTrack.Management.ModelRetrain.Entities;
 
@@ -32,6 +33,13 @@ namespace YouTrack.Management.ModelRetrain.Controllers
 
             await _dbContext.SaveChangesAsync();
             return Ok(entity?.RetrainEnabled ?? true);
+        }
+
+        [HttpGet("Status/{projectShortName}")]
+        public async Task<bool> GetStatus(string projectShortName)
+        {
+            var entity = await _dbContext.Projects.FirstOrDefaultAsync(x => x.ProjectKey == projectShortName);
+            return entity?.RetrainEnabled ?? false;
         }
     }
 }

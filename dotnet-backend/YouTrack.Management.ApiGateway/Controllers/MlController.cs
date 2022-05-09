@@ -36,5 +36,12 @@ namespace YouTrack.Management.ApiGateway.Controllers
             var result = await _modelRetrainClient.SwitchRetrainForProject(projectShortName);
             return Ok(result);
         }
+
+        [HttpGet("RetrainingState/{projectShortName}")]
+        public async Task<bool> GetRetrainingState(string projectShortName)
+        {
+            var result = await _modelRetrainClient.GetRetrainState(projectShortName);
+            return result;
+        }
     }
 }

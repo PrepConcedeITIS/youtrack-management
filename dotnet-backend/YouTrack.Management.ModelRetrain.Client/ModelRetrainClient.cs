@@ -16,5 +16,12 @@ namespace YouTrack.Management.ModelRetrain.Client
             var (code, result) = await CallApiPostAsync(url, null);
             return DeserializeResult<bool>(result);
         }
+
+        public async Task<bool> GetRetrainState(string projectShortName)
+        {
+            var url = BuildUrl($"Retrain/Status/{projectShortName}");
+            var (code, result) = await CallApiGetAsync(url);
+            return DeserializeResult<bool>(result);
+        }
     }
 }
