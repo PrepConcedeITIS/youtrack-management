@@ -37,7 +37,7 @@ def save_model(model, project):
 
 
 def load_model(project):
-    models = glob.glob("models/project/random-forest-*.joblib")
+    models = glob.glob(f"models/{project}/random-forest-*.joblib")
     last = sorted(models, reverse=True)[0]
     return joblib.load(last)
 
