@@ -48,7 +48,7 @@ namespace YouTrack.Management.AssignSprint.Controllers
             }
 
             var predictionResult = await _machineLearningClient
-                .GetPredictions(new PredictRequest(predictionRequestItems));
+                .GetPredictions(new PredictRequest(predictionRequestItems), request.ProjectShortName);
 
             var distributionResult = _issueDistributionAlgorithm.Handle(assignees, sprintIssues, predictionResult);
 

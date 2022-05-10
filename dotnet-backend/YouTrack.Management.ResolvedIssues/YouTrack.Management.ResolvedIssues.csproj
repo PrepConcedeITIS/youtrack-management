@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\YouTrack.Management.Shared\YouTrack.Management.Shared.csproj" />
+      <ProjectReference Include="..\YouTrack.Management.TrainMockDataGeneration.Client\YouTrack.Management.TrainMockDataGeneration.Client.csproj" />
       <ProjectReference Include="..\YouTrack.Management.YouTrack.Client\YouTrack.Management.YouTrack.Client.csproj" />
     </ItemGroup>
 

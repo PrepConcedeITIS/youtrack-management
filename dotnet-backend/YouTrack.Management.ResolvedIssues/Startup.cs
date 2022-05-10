@@ -11,6 +11,7 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 using YouTrack.Management.Common;
 using YouTrack.Management.ResolvedIssues.Interfaces;
 using YouTrack.Management.ResolvedIssues.Services;
+using YouTrack.Management.TrainMockDataGeneration.Client;
 using YouTrack.Management.YouTrack.Client;
 
 namespace YouTrack.Management.ResolvedIssues
@@ -41,12 +42,9 @@ namespace YouTrack.Management.ResolvedIssues
                     new AuthenticationHeaderValue("Bearer", Configuration.GetSection("YouTrack")?["Token"]);
                 client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
             });
-            services.AddHttpClient("MockDataService", client =>
-            {
-                client.BaseAddress = new Uri(Configuration.GetSection("MockDataService")["Url"]);
-            });
 
             services.AddClient<YouTrackClient, YouTrackClientSettings>(Configuration, new YouTrackClientConfigurator());
+            services.AddClient<TrainMockDataGenerationClient, TrainMockDataGenerationClientSettings>(Configuration, new DefaultHttpClientConfigurator());
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddScoped<IIssueLoader, YouTrackDoneIssuesLoader>();
             services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis")

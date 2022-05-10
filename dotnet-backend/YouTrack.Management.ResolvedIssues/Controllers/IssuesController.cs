@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using YouTrack.Management.ResolvedIssues.Interfaces;
 using YouTrack.Management.Shared.Entities.Issue;
+using YouTrack.Management.TrainMockDataGeneration.Client;
 
 namespace YouTrack.Management.ResolvedIssues.Controllers
 {
@@ -22,29 +21,30 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
         private readonly IIssueLoader _issueLoader;
         private readonly IRedisClient _redisClient;
         private readonly IMapper _mapper;
-        private readonly HttpClient _mockDataClient;
+        private readonly TrainMockDataGenerationClient _trainMockDataGenerationClient;
 
         public IssuesController(IIssueLoader issueLoader, IRedisClient redisClient, IMapper mapper,
-            IHttpClientFactory httpClientFactory)
+            TrainMockDataGenerationClient trainMockDataGenerationClient)
         {
             _issueLoader = issueLoader;
             _redisClient = redisClient;
             _mapper = mapper;
-            _mockDataClient = httpClientFactory.CreateClient("MockDataService");
+            _trainMockDataGenerationClient = trainMockDataGenerationClient;
         }
 
-        [HttpGet("resolvedIssuesFromTaskTracker")]
-        public async Task<IActionResult> GetResolvedIssuesFromTaskTracker()
+        [HttpGet("resolvedIssuesFromTaskTracker/{projectShortName}")]
+        public async Task<IActionResult> GetResolvedIssuesFromTaskTracker(string projectShortName)
         {
-            var issues = await _issueLoader.Get();
+            var issues = await _issueLoader.Get(projectShortName);
             return Ok(issues);
         }
 
-        [HttpPost("renewIssuesInStorage")]
-        public async Task<IActionResult> RenewIssues()
+        [HttpPost("renewIssuesInStorage/{projectShortName}")]
+        public async Task<IActionResult> RenewIssues(string projectShortName)
         {
-            var presentedIssues = (await _redisClient.GetDefaultDatabase().SearchKeysAsync("*")).ToHashSet();
-            var issues = (await _issueLoader.Get(presentedIssues)).ToList();
+            var presentedIssues = (await _redisClient.GetDefaultDatabase().SearchKeysAsync($"{projectShortName}-*"))
+                .ToHashSet();
+            var issues = (await _issueLoader.Get(projectShortName, presentedIssues)).ToList();
             var addingResult = await _redisClient.GetDefaultDatabase()
                 .AddAllAsync(issues.Select(x => Tuple.Create(x.IdReadable, x)).ToArray());
 
@@ -56,24 +56,16 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
             return Ok(allIssues);
         }
 
-        //todo: rewrite mock part add regenerate param to TrainMockDataGenerationClient.GetMockTrainData
-        [HttpGet("machineLearningCsv")]
-        public async Task<IActionResult> GetIssuesMlCsv([FromQuery] bool withMock)
+        [HttpGet("machineLearningCsv/{projectShortName}")]
+        public async Task<IActionResult> GetIssuesMlCsv(string projectShortName, [FromQuery] bool withMock)
         {
             async Task<List<IssueMlCsv>> GetIssuesFromRedis()
             {
-                var keys = await _redisClient.GetDefaultDatabase().SearchKeysAsync("*");
+                var keys = await _redisClient.GetDefaultDatabase().SearchKeysAsync($"{projectShortName}-*");
                 var issues = await _redisClient.GetDefaultDatabase().GetAllAsync<Issue>(keys.ToArray());
                 var issueMlCsvs = _mapper.Map<List<IssueMlCsv>>(issues.Values);
                 return issueMlCsvs;
             }
-
-            async Task<List<IssueMlCsv>> GetMockData()
-            {
-                var result = await _mockDataClient.GetStringAsync("MockTrainData");
-                return JsonConvert.DeserializeObject<List<IssueMlCsv>>(result);
-            }
-
 
             var issuesMlTask = GetIssuesFromRedis();
             var tasks = new List<Task>()
@@ -81,19 +73,16 @@ namespace YouTrack.Management.ResolvedIssues.Controllers
                 issuesMlTask
             };
             Task<List<IssueMlCsv>> mockTask = null;
-            if (withMock)
+            var addMock = withMock && projectShortName == "AVG";
+            if (addMock)
             {
-                mockTask = GetMockData();
-            }
-
-            if (withMock)
-            {
+                mockTask = _trainMockDataGenerationClient.GetMockTrainData();
                 tasks.Add(mockTask);
             }
 
             await Task.WhenAll(tasks);
             var issuesMl = await issuesMlTask;
-            if (withMock)
+            if (addMock)
             {
                 issuesMl.AddRange(await mockTask);
             }

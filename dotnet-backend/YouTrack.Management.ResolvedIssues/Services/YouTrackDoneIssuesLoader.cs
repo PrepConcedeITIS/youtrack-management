@@ -33,9 +33,9 @@ namespace YouTrack.Management.ResolvedIssues.Services
             _httpClient = httpClientFactory.CreateClient(Constants.YouTrackHttpClientName);
         }
 
-        public async Task<IEnumerable<Issue>> Get(HashSet<string> exceptIssuesIdsReadable = null)
+        public async Task<IEnumerable<Issue>> Get(string projectShortName, HashSet<string> exceptIssuesIdsReadable = null)
         {
-            return await _youTrackClient.GetDoneIssues(exceptIssuesIdsReadable: exceptIssuesIdsReadable);
+            return await _youTrackClient.GetDoneIssues(projectShortName, exceptIssuesIdsReadable: exceptIssuesIdsReadable);
             var httpResponseMessage = await _httpClient.GetAsync(
                 $"issues?{IssueFields}&query={IssueQuery.PipeTo(HttpUtility.UrlEncode)}");
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
